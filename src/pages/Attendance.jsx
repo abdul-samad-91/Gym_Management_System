@@ -177,11 +177,11 @@ export default function Attendance() {
                 <tr key={att._id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-3 px-4">
                     <div className="flex items-center space-x-3">
-                      <img
+                      {/* <img
                         src={att.member.photo || '/default-avatar.png'}
                         alt={att.member.fullName}
                         className="w-10 h-10 rounded-full object-cover"
-                      />
+                      /> */}
                       <div>
                         <p className="font-medium text-gray-900">{att.member.fullName}</p>
                         <p className="text-sm text-gray-500">{att.member.memberId}</p>
@@ -267,11 +267,11 @@ export default function Attendance() {
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <img
+                    {/* <img
                       src={member.photo || '/default-avatar.png'}
                       alt={member.fullName}
                       className="w-12 h-12 rounded-full object-cover"
-                    />
+                    /> */}
                     <div className="flex-1">
                       <p className="font-medium text-gray-900">{member.fullName}</p>
                       <p className="text-sm text-gray-500">{member.memberId}</p>

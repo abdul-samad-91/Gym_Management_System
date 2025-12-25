@@ -27,8 +27,8 @@ export default function Sidebar() {
         <div className="flex items-center space-x-2">
           <Dumbbell className="w-8 h-8 text-primary-600" />
           <div>
-            <h1 className="text-xl font-bold text-gray-900">GymPro</h1>
-            <p className="text-xs text-gray-500">Management System</p>
+            <h1 className="text-xl font-bold text-gray-900">GMS</h1>
+            <p className="text-xs text-gray-500">Gym Management System</p>
           </div>
         </div>
       </div>

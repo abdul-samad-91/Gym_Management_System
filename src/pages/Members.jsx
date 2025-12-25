@@ -110,11 +110,11 @@ export default function Members() {
             className="card hover:shadow-lg transition-shadow"
           >
             <div className="flex items-start space-x-4">
-              <img
+              {/* <img
                 src={member.photo || '/default-avatar.png'}
                 alt={member.fullName}
                 className="w-16 h-16 rounded-full object-cover"
-              />
+              /> */}
               <div className="flex-1">
                 <div className="flex items-start justify-between">
                   <div>

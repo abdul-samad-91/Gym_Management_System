@@ -132,11 +132,11 @@ export default function Trainers() {
         {trainers.map((trainer) => (
           <div key={trainer._id} className="card hover:shadow-lg transition-shadow">
             <div className="flex items-start space-x-4">
-              <img
+              {/* <img
                 src={trainer.photo || '/default-avatar.png'}
                 alt={trainer.fullName}
                 className="w-16 h-16 rounded-full object-cover"
-              />
+              /> */}
               <div className="flex-1">
                 <div className="flex items-start justify-between">
                   <div>
@@ -161,7 +161,7 @@ export default function Trainers() {
                 </div>
                 <div className="mt-3 space-y-2">
                   <p className="text-sm text-gray-600">📞 {trainer.phone}</p>
-                  {trainer.email && <p className="text-sm text-gray-600">✉️ {trainer.email}</p>}
+                  {/* {trainer.email && <p className="text-sm text-gray-600">✉️ {trainer.email}</p>} */}
                   <div className="flex flex-wrap gap-1 mt-2">
                     {trainer.specialization.map((spec) => (
                       <span key={spec} className="badge badge-info text-xs">
@@ -248,7 +248,7 @@ export default function Trainers() {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="label">Email</label>
             <input
               type="email"
@@ -256,9 +256,9 @@ export default function Trainers() {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="input"
             />
-          </div>
+          </div> */}
 
-          <div>
+          {/* <div>
             <label className="label">Salary</label>
             <input
               type="number"
@@ -267,7 +267,7 @@ export default function Trainers() {
               onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
               className="input"
             />
-          </div>
+          </div> */}
 
           <div>
             <label className="label">Specialization *</label>

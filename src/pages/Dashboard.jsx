@@ -101,11 +101,11 @@ export default function Dashboard() {
           <div className="space-y-3">
             {stats.recentMembers.map((member) => (
               <div key={member._id} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
-                <img
+                {/* <img
                   src={member.photo || '/default-avatar.png'}
                   alt={member.fullName}
                   className="w-10 h-10 rounded-full object-cover"
-                />
+                /> */}
                 <div className="flex-1">
                   <p className="font-medium text-gray-900">{member.fullName}</p>
                   <p className="text-sm text-gray-500">{member.memberId}</p>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 
@@ -9,6 +9,7 @@ export default function AddMember() {
   const navigate = useNavigate();
   const isEdit = Boolean(id);
   const [loading, setLoading] = useState(false);
+  const [trainers, setTrainers] = useState([]); // <-- For trainer dropdown
   const [formData, setFormData] = useState({
     fullName: '',
     gender: 'Male',
@@ -21,21 +22,24 @@ export default function AddMember() {
       state: '',
       zipCode: '',
     },
-    emergencyContact: {
-      name: '',
-      phone: '',
-      relation: '',
-    },
-    medicalNotes: '',
+    assignedTrainer: '', // <-- New field for trainer assignment
   });
-  const [photoFile, setPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
 
   useEffect(() => {
-    if (isEdit) {
-      fetchMember();
-    }
+    fetchTrainers(); // fetch trainers for dropdown
+    if (isEdit) fetchMember();
   }, [id]);
+
+  const fetchTrainers = async () => {
+    try {
+      const response = await api.get('/trainers');
+      if (response.data.success) {
+        setTrainers(response.data.data);
+      }
+    } catch (error) {
+      toast.error('Failed to fetch trainers');
+    }
+  };
 
   const fetchMember = async () => {
     try {
@@ -54,14 +58,8 @@ export default function AddMember() {
             state: '',
             zipCode: '',
           },
-          emergencyContact: member.emergencyContact || {
-            name: '',
-            phone: '',
-            relation: '',
-          },
-          medicalNotes: member.medicalNotes || '',
+          assignedTrainer: member.assignedTrainer?._id || '', // <-- Populate assigned trainer if editing
         });
-        setPhotoPreview(member.photo);
       }
     } catch (error) {
       toast.error('Failed to fetch member details');
@@ -74,32 +72,16 @@ export default function AddMember() {
       const [parent, child] = name.split('.');
       setFormData((prev) => ({
         ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
+        [parent]: { ...prev[parent], [child]: value },
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPhotoFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
@@ -109,9 +91,6 @@ export default function AddMember() {
           data.append(key, formData[key]);
         }
       });
-      if (photoFile) {
-        data.append('photo', photoFile);
-      }
 
       if (isEdit) {
         await api.put(`/members/${id}`, data, {
@@ -147,29 +126,6 @@ export default function AddMember() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Photo Upload */}
-        <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Photo</h2>
-          <div className="flex items-center space-x-4">
-            <img
-              src={photoPreview || '/default-avatar.png'}
-              alt="Preview"
-              className="w-24 h-24 rounded-full object-cover"
-            />
-            <label className="btn btn-secondary cursor-pointer">
-              <Upload className="w-5 h-5 mr-2" />
-              Upload Photo
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="hidden"
-              />
-            </label>
-          </div>
-        </div>
-
-        {/* Personal Information */}
         <div className="card">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -220,15 +176,23 @@ export default function AddMember() {
                 required
               />
             </div>
+
+            {/* Trainer Assignment */}
             <div>
-              <label className="label">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
+              <label className="label">Assign Trainer</label>
+              <select
+                name="assignedTrainer"
+                value={formData.assignedTrainer}
                 onChange={handleChange}
                 className="input"
-              />
+              >
+                <option value="">-- Select Trainer --</option>
+                {trainers.map((trainer) => (
+                  <option key={trainer._id} value={trainer._id}>
+                    {trainer.fullName}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
@@ -280,58 +244,6 @@ export default function AddMember() {
           </div>
         </div>
 
-        {/* Emergency Contact */}
-        <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Emergency Contact</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="label">Name</label>
-              <input
-                type="text"
-                name="emergencyContact.name"
-                value={formData.emergencyContact.name}
-                onChange={handleChange}
-                className="input"
-              />
-            </div>
-            <div>
-              <label className="label">Phone</label>
-              <input
-                type="tel"
-                name="emergencyContact.phone"
-                value={formData.emergencyContact.phone}
-                onChange={handleChange}
-                className="input"
-              />
-            </div>
-            <div>
-              <label className="label">Relation</label>
-              <input
-                type="text"
-                name="emergencyContact.relation"
-                value={formData.emergencyContact.relation}
-                onChange={handleChange}
-                className="input"
-                placeholder="e.g., Spouse, Parent"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Medical Notes */}
-        <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Medical Notes</h2>
-          <textarea
-            name="medicalNotes"
-            value={formData.medicalNotes}
-            onChange={handleChange}
-            className="input"
-            rows="4"
-            placeholder="Any medical conditions, injuries, or notes..."
-          ></textarea>
-        </div>
-
-        {/* Submit */}
         <div className="flex justify-end space-x-2">
           <button
             type="button"
@@ -349,4 +261,3 @@ export default function AddMember() {
     </div>
   );
 }
-

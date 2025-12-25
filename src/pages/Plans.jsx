@@ -207,7 +207,7 @@ export default function Plans() {
         size="md"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          {/* <div>
             <label className="label">Plan Name *</label>
             <input
               type="text"
@@ -216,7 +216,24 @@ export default function Plans() {
               className="input"
               required
             />
-          </div>
+          </div> */}
+          
+          {/* Change the input into Dropdown the input code comment above */}
+          <div>
+  <label className="label">Plan Name *</label>
+  <select
+    value={formData.planName}
+    onChange={(e) => setFormData({ ...formData, planName: e.target.value })}
+    className="input"
+    required
+  >
+    <option value="">Select Plan</option>
+    <option value="Basic">Basic</option>
+    <option value="Medium">Medium</option>
+    <option value="Standard">Standard</option>
+    <option value="Premium">Premium</option>
+  </select>
+</div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -294,7 +311,7 @@ export default function Plans() {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label className="label">Description</label>
             <textarea
               value={formData.description}
@@ -302,9 +319,9 @@ export default function Plans() {
               className="input"
               rows="3"
             ></textarea>
-          </div>
+          </div> */}
 
-          <div>
+          {/* <div>
             <label className="label">Features</label>
             {formData.features.map((feature, index) => (
               <div key={index} className="flex space-x-2 mb-2">
@@ -328,7 +345,7 @@ export default function Plans() {
               <Plus className="w-4 h-4 mr-1" />
               Add Feature
             </button>
-          </div>
+          </div> */}
 
           <div className="flex justify-end space-x-2 pt-4">
             <button
