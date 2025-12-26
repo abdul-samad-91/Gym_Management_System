@@ -10,6 +10,8 @@ export default function AddMember() {
   const isEdit = Boolean(id);
   const [loading, setLoading] = useState(false);
   const [trainers, setTrainers] = useState([]); // <-- For trainer dropdown
+  const [plans, setPlans] = useState([]); // <-- For plan dropdown
+  // const [trainerPrices, setTrainerPrices] = useState([]); // <-- For trainer price dropdown
   const [formData, setFormData] = useState({
     fullName: '',
     gender: 'Male',
@@ -23,10 +25,12 @@ export default function AddMember() {
       zipCode: '',
     },
     assignedTrainer: '', // <-- New field for trainer assignment
+    currentPlan: '', // <-- New field for plan assignment
   });
 
   useEffect(() => {
     fetchTrainers(); // fetch trainers for dropdown
+    fetchPlans(); // fetch plans for dropdown
     if (isEdit) fetchMember();
   }, [id]);
 
@@ -38,6 +42,17 @@ export default function AddMember() {
       }
     } catch (error) {
       toast.error('Failed to fetch trainers');
+    }
+  };
+
+  const fetchPlans = async () => {
+    try {
+      const response = await api.get('/plans', { params: { isActive: true } });
+      if (response.data.success) {
+        setPlans(response.data.data);
+      }
+    } catch (error) {
+      toast.error('Failed to fetch plans');
     }
   };
 
@@ -59,12 +74,15 @@ export default function AddMember() {
             zipCode: '',
           },
           assignedTrainer: member.assignedTrainer?._id || '', // <-- Populate assigned trainer if editing
+          currentPlan: member.currentPlan?._id || '', // <-- Populate plan if editing
         });
       }
     } catch (error) {
       toast.error('Failed to fetch member details');
     }
   };
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,28 +97,20 @@ export default function AddMember() {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (typeof formData[key] === 'object') {
-          data.append(key, JSON.stringify(formData[key]));
-        } else {
-          data.append(key, formData[key]);
-        }
-      });
+      // Send as JSON since photo upload is currently disabled
+      const submitData = { ...formData };
 
       if (isEdit) {
-        await api.put(`/members/${id}`, data, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        await api.put(`/members/${id}`, submitData);
         toast.success('Member updated successfully');
       } else {
-        await api.post('/members', data, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        // to add new member
+        await api.post('/members', submitData);
         toast.success('Member added successfully');
       }
       navigate('/members');
@@ -126,6 +136,30 @@ export default function AddMember() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+         {/* Photo Upload */}
+        {/* <div className="card">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Photo</h2>
+          <div className="flex items-center space-x-4">
+            <img
+              src={photoPreview || '/default-avatar.png'}
+              alt="Preview"
+              className="w-24 h-24 rounded-full object-cover"
+            />
+            <label className="btn btn-secondary cursor-pointer">
+              <Upload className="w-5 h-5 mr-2" />
+              Upload Photo
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
+            </label>
+          </div>
+        </div> */}
+
+
+        {/* Personal Information */}
         <div className="card">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -194,8 +228,49 @@ export default function AddMember() {
                 ))}
               </select>
             </div>
+
+            {/* Plan Assignment */}
+            <div>
+              <label className="label">Assign Plan</label>
+              <select
+                name="currentPlan"
+                value={formData.currentPlan}
+                onChange={handleChange}
+                className="input"
+              >
+                <option value="">-- Select Plan --</option>
+                {plans.map((plan) => (
+                  <option key={plan._id} value={plan._id}>
+                    {plan.planName} • {plan.duration.value} {plan.duration.unit} • ${plan.price}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+ {/* Trainer Price  */}
+            {/* <div>
+              <label className="label">Select Trainer Price</label>
+              <select
+                name="assignedTrainerPrice"
+                value={formData.assignedTrainerPrice}
+                onChange={handleChange}
+                className="input"
+              >
+                <option value="">-- Select Trainer Price --</option>
+                {trainerPrices.map((trainerPrice) => (
+                  <option key={trainerPrice._id} value={trainerPrice._id}>
+                    {trainerPrice.price}
+                  </option>
+                ))}
+              </select>
+            </div> */}
+
+        {/* Trainer Price  */}
+
           </div>
         </div>
+       
+
 
         {/* Address */}
         <div className="card">
@@ -244,6 +319,62 @@ export default function AddMember() {
           </div>
         </div>
 
+
+{/* Emergency Contact */}
+        {/* <div className="card">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Emergency Contact</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="label">Name</label>
+              <input
+                type="text"
+                name="emergencyContact.name"
+                value={formData.emergencyContact.name}
+                onChange={handleChange}
+                className="input"
+              />
+            </div>
+            <div>
+              <label className="label">Phone</label>
+              <input
+                type="tel"
+                name="emergencyContact.phone"
+                value={formData.emergencyContact.phone}
+                onChange={handleChange}
+                className="input"
+              />
+            </div>
+            <div>
+              <label className="label">Relation</label>
+              <input
+                type="text"
+                name="emergencyContact.relation"
+                value={formData.emergencyContact.relation}
+                onChange={handleChange}
+                className="input"
+                placeholder="e.g., Spouse, Parent"
+              />
+            </div>
+          </div>
+        </div> */}
+
+        {/* Medical Notes */}
+        {/* <div className="card">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Medical Notes</h2>
+          <textarea
+            name="medicalNotes"
+            value={formData.medicalNotes}
+            onChange={handleChange}
+            className="input"
+            rows="4"
+            placeholder="Any medical conditions, injuries, or notes..."
+          ></textarea>
+        </div> */}
+
+
+
+
+{/* Submit  */}
         <div className="flex justify-end space-x-2">
           <button
             type="button"

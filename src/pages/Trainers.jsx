@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Users } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, Upload } from 'lucide-react';
 import Modal from '../components/Modal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
@@ -10,6 +10,7 @@ export default function Trainers() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingTrainer, setEditingTrainer] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
   const [formData, setFormData] = useState({
     fullName: '',
     gender: 'Male',
@@ -18,7 +19,20 @@ export default function Trainers() {
     specialization: [],
     experience: 0,
     salary: '',
+    photo: null, // store backend URL here
   });
+
+  const specializationOptions = [
+    'Yoga',
+    'Cardio',
+    'Strength Training',
+    'CrossFit',
+    'Pilates',
+    'Zumba',
+    'Martial Arts',
+    'Swimming',
+    'Personal Training',
+  ];
 
   useEffect(() => {
     fetchTrainers();
@@ -35,6 +49,33 @@ export default function Trainers() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle photo selection & upload
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Preview locally
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result);
+      setFormData((prev) => ({ ...prev, photo: reader.result }));
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to backend
+    // const uploadData = new FormData();
+    // uploadData.append('photo', file);
+
+    // try {
+    //   const res = await api.post('/trainer/upload', uploadData);
+    //   const photoUrl = res.data.photoUrl;
+    //   setFormData((prev) => ({ ...prev, photo: photoUrl }));
+    // } catch (err) {
+    //   console.log(err)
+    //   toast.error('Failed to upload photo');
+    // }
   };
 
   const handleSubmit = async (e) => {
@@ -61,11 +102,14 @@ export default function Trainers() {
       fullName: trainer.fullName,
       gender: trainer.gender,
       phone: trainer.phone,
+      price: trainer.price || 0,
       email: trainer.email || '',
       specialization: trainer.specialization,
       experience: trainer.experience,
       salary: trainer.salary,
+      photo: trainer.photo || null,
     });
+    setPhotoPreview(trainer.photo || null);
     setShowModal(true);
   };
 
@@ -91,25 +135,16 @@ export default function Trainers() {
       specialization: [],
       experience: 0,
       salary: '',
+      photo: null,
     });
+    setPhotoPreview(null);
   };
-
-  const specializationOptions = [
-    'Yoga',
-    'Cardio',
-    'Strength Training',
-    'CrossFit',
-    'Pilates',
-    'Zumba',
-    'Martial Arts',
-    'Swimming',
-    'Personal Training',
-  ];
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Trainers</h1>
@@ -132,18 +167,19 @@ export default function Trainers() {
         {trainers.map((trainer) => (
           <div key={trainer._id} className="card hover:shadow-lg transition-shadow">
             <div className="flex items-start space-x-4">
-              {/* <img
-                src={trainer.photo || '/default-avatar.png'}
+              <img
+                src={trainer.photo ? trainer.photo : '/default-avatar.png'}
                 alt={trainer.fullName}
                 className="w-16 h-16 rounded-full object-cover"
-              /> */}
+              />
               <div className="flex-1">
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-semibold text-gray-900">{trainer.fullName}</h3>
                     <p className="text-sm text-gray-500">{trainer.trainerId}</p>
                     <p className="text-sm text-gray-600 mt-1">{trainer.experience} years exp.</p>
-                  </div>
+                    {/* <p className="text-sm text-gray-600 mt-1"> ${trainer.price} per session</p> */}
+                  </div>  
                   <div className="flex space-x-1">
                     <button
                       onClick={() => handleEdit(trainer)}
@@ -159,9 +195,9 @@ export default function Trainers() {
                     </button>
                   </div>
                 </div>
+
                 <div className="mt-3 space-y-2">
                   <p className="text-sm text-gray-600">📞 {trainer.phone}</p>
-                  {/* {trainer.email && <p className="text-sm text-gray-600">✉️ {trainer.email}</p>} */}
                   <div className="flex flex-wrap gap-1 mt-2">
                     {trainer.specialization.map((spec) => (
                       <span key={spec} className="badge badge-info text-xs">
@@ -172,7 +208,7 @@ export default function Trainers() {
                   <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-gray-200">
                     <Users className="w-4 h-4 text-gray-500" />
                     <span className="text-sm text-gray-600">
-                      {trainer.assignedMembers.length} members
+                      {trainer.assignedMembers?.length || 0} members
                     </span>
                   </div>
                 </div>
@@ -199,6 +235,7 @@ export default function Trainers() {
         size="md"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Full Name */}
           <div>
             <label className="label">Full Name *</label>
             <input
@@ -210,6 +247,7 @@ export default function Trainers() {
             />
           </div>
 
+          {/* Gender & Experience */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="label">Gender *</label>
@@ -237,6 +275,7 @@ export default function Trainers() {
             </div>
           </div>
 
+          {/* Phone */}
           <div>
             <label className="label">Phone Number *</label>
             <input
@@ -248,27 +287,41 @@ export default function Trainers() {
             />
           </div>
 
-          {/* <div>
-            <label className="label">Email</label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="input"
-            />
-          </div> */}
+{/* Trainer Price  */}
+{/* <div>
+  <label className="label">Price *</label>
+  <input
+    type="number"
+    min="0"
+    value={formData.price || ''}
+    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+    className="input"
+    required
+  />
+</div> */}
+{/* Trainer Price  */}
 
-          {/* <div>
-            <label className="label">Salary</label>
-            <input
-              type="number"
-              min="0"
-              value={formData.salary}
-              onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-              className="input"
-            />
-          </div> */}
 
+          {/* Upload Photo */}
+          <div className="flex items-center space-x-4">
+            <img
+              src={photoPreview || '/default-avatar.png'}
+              alt="Preview"
+              className="w-24 h-24 rounded-full object-cover"
+            />
+            <label className="btn btn-secondary cursor-pointer flex items-center">
+              <Upload className="w-5 h-5 mr-2" />
+              Upload Photo
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
+            </label>
+          </div>
+
+          {/* Specialization */}
           <div>
             <label className="label">Specialization *</label>
             <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -298,6 +351,7 @@ export default function Trainers() {
             </div>
           </div>
 
+          {/* Modal Actions */}
           <div className="flex justify-end space-x-2 pt-4">
             <button
               type="button"
@@ -318,4 +372,3 @@ export default function Trainers() {
     </div>
   );
 }
-

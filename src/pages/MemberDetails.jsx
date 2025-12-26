@@ -57,7 +57,7 @@ export default function MemberDetails() {
   if (!data) return <div>Member not found</div>;
 
   const { member, attendanceHistory, paymentHistory } = data;
-
+  // console.log(data)
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -87,20 +87,20 @@ export default function MemberDetails() {
         {/* Profile Card */}
         <div className="card lg:col-span-1">
           <div className="text-center">
-            <img
+            {/* <img
               src={member.photo || '/default-avatar.png'}
               alt={member.fullName}
               className="w-32 h-32 rounded-full object-cover mx-auto mb-4"
-            />
-            <h2 className="text-xl font-bold text-gray-900">{member.fullName}</h2>
+            /> */}
+            <h2 className="text-xl font-bold text-gray-900 ">{member.fullName}</h2>
             <p className="text-gray-600 mb-4">{member.memberId}</p>
             <span className={`badge ${getStatusColor(member.membershipStatus)} text-lg`}>
               {member.membershipStatus}
             </span>
           </div>
 
-          <div className="mt-6 space-y-3">
-            <div className="flex items-center space-x-2 text-gray-700">
+          <div className="mt-6 space-y-3 ">
+            <div className="flex items-center space-x-2 text-gray-700" >
               <Phone className="w-5 h-5" />
               <span>{member.phone}</span>
             </div>
@@ -146,7 +146,7 @@ export default function MemberDetails() {
               <div>
                 <p className="text-sm text-gray-600">Current Plan</p>
                 <p className="font-medium text-gray-900">
-                  {member.currentPlan?.planName || 'No Plan'}
+                  {member.currentPlan ?.planName || 'No Plan'}
                 </p>
               </div>
               <div>
