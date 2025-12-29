@@ -15,7 +15,7 @@ export default function Trainers() {
     fullName: '',
     gender: 'Male',
     phone: '',
-    email: '',
+    // email: '',
     specialization: [],
     experience: 0,
     salary: '',
@@ -288,17 +288,17 @@ export default function Trainers() {
           </div>
 
 {/* Trainer Price  */}
-{/* <div>
+<div>
   <label className="label">Price *</label>
   <input
     type="number"
     min="0"
     value={formData.price || ''}
-    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+    onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
     className="input"
     required
   />
-</div> */}
+</div>
 {/* Trainer Price  */}
 
 

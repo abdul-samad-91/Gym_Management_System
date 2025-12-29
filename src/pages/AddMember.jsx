@@ -19,7 +19,7 @@ export default function AddMember() {
     phone: '',
     email: '',
     address: {
-      street: '',
+      // street: '',
       city: '',
       state: '',
       zipCode: '',
@@ -68,7 +68,7 @@ export default function AddMember() {
           phone: member.phone,
           email: member.email || '',
           address: member.address || {
-            street: '',
+            // street: '',
             city: '',
             state: '',
             zipCode: '',
@@ -241,7 +241,7 @@ export default function AddMember() {
                 <option value="">-- Select Plan --</option>
                 {plans.map((plan) => (
                   <option key={plan._id} value={plan._id}>
-                    {plan.planName} • {plan.duration.value} {plan.duration.unit} • ${plan.price}
+                    {plan.planName} • {plan.duration.value} {plan.duration.unit} • Rs {plan.price}
                   </option>
                 ))}
               </select>
@@ -276,7 +276,7 @@ export default function AddMember() {
         <div className="card">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Address</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
+            {/* <div className="md:col-span-2">
               <label className="label">Street</label>
               <input
                 type="text"
@@ -285,7 +285,7 @@ export default function AddMember() {
                 onChange={handleChange}
                 className="input"
               />
-            </div>
+            </div> */}
             <div>
               <label className="label">City</label>
               <input

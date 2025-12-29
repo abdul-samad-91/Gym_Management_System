@@ -229,7 +229,7 @@ export default function Plans() {
   >
     <option value="">Select Plan</option>
     <option value="Basic">Basic</option>
-    <option value="Medium">Medium</option>
+    {/* <option value="Medium">Medium</option> */}
     <option value="Standard">Standard</option>
     <option value="Premium">Premium</option>
   </select>

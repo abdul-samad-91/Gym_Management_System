@@ -20,13 +20,21 @@ export const getRelativeTime = (date) => {
   return formatDistanceToNow(new Date(date), { addSuffix: true });
 };
 
-export const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+// export const formatCurrency = (amount) => {
+//   return new Intl.NumberFormat('en-IN', {
+//     style: 'currency',
+//     currency: 'PKR',
+//     minimumFractionDigits: 0,
+//   }).format(amount);
+// };
+
+
+export const formatCurrency = (amount = 0) => {
+  return `Rs ${new Intl.NumberFormat('en-PK', {
     minimumFractionDigits: 0,
-  }).format(amount);
+  }).format(amount)}`;
 };
+
 
 export const calculateAge = (dateOfBirth) => {
   if (!dateOfBirth) return 'N/A';
