@@ -146,7 +146,7 @@ export default function MemberDetails() {
               <div>
                 <p className="text-sm text-gray-600">Current Plan</p>
                 <p className="font-medium text-gray-900">
-                  {member.currentPlan ?.planName || 'No Plan'}
+                  {member.currentPlan?.planName || 'No Plan'}
                 </p>
               </div>
               <div>
@@ -164,13 +164,13 @@ export default function MemberDetails() {
                 <p className="font-medium text-gray-900">{formatDate(member.planEndDate)}</p>
               </div>
               <div>
-    <p className="text-sm text-gray-600">Trainer Price</p>
-    <p className="font-medium text-gray-900">
-      {member.assignedTrainer?.price
-        ? formatCurrency(member.assignedTrainer.price)
-        : 'N/A'}
-    </p>
-  </div>
+                <p className="text-sm text-gray-600">Trainer Price</p>
+                <p className="font-medium text-gray-900">
+                  {member.assignedTrainer?.price
+                    ? formatCurrency(member.assignedTrainer.price)
+                    : 'N/A'}
+                </p>
+              </div>
             </div>
           </div>
 

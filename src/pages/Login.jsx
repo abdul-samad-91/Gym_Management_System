@@ -39,8 +39,8 @@ export default function Login() {
           <div className="flex items-center space-x-2">
             <Dumbbell className="w-10 h-10 text-primary-600" />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">GymPro</h1>
-              <p className="text-sm text-gray-500">Management System</p>
+              <h1 className="text-2xl font-bold text-gray-900">GMS</h1>
+              <p className="text-sm text-gray-500">Gym Management System</p>
             </div>
           </div>
         </div>
