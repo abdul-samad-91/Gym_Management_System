@@ -60,9 +60,11 @@ export default function Trainers() {
     const reader = new FileReader();
     reader.onloadend = () => {
       setPhotoPreview(reader.result);
-      setFormData((prev) => ({ ...prev, photo: reader.result }));
     };
     reader.readAsDataURL(file);
+
+    // Store the actual File object for upload
+    setFormData((prev) => ({ ...prev, photo: file }));
 
     // Upload to backend
     // const uploadData = new FormData();
@@ -78,40 +80,115 @@ export default function Trainers() {
     // }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (editingTrainer) {
-        await api.put(`/trainers/${editingTrainer._id}`, formData);
-        toast.success('Trainer updated successfully');
-      } else {
-        await api.post('/trainers', formData);
-        toast.success('Trainer added successfully');
-      }
-      setShowModal(false);
-      resetForm();
-      fetchTrainers();
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to save trainer');
-    }
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     if (editingTrainer) {
+  //       await api.put(`/trainers/${editingTrainer._id}`, formData);
+  //       toast.success('Trainer updated successfully');
+  //     } else {
+  //       await api.post('/trainers', formData);
+  //       toast.success('Trainer added successfully');
+  //     }
+  //     setShowModal(false);
+  //     resetForm();
+  //     fetchTrainers();
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || 'Failed to save trainer');
+  //   }
+  // };
 
-  const handleEdit = (trainer) => {
-    setEditingTrainer(trainer);
-    setFormData({
-      fullName: trainer.fullName,
-      gender: trainer.gender,
-      phone: trainer.phone,
-      price: trainer.price || 0,
-      email: trainer.email || '',
-      specialization: trainer.specialization,
-      experience: trainer.experience,
-      salary: trainer.salary,
-      photo: trainer.photo || null,
-    });
-    setPhotoPreview(trainer.photo || null);
-    setShowModal(true);
-  };
+
+// handle submit new code with photo upload to backend
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const submitData = new FormData();
+
+    // Append all fields
+    submitData.append("fullName", formData.fullName);
+    submitData.append("gender", formData.gender);
+    submitData.append("phone", formData.phone);
+    submitData.append("experience", formData.experience);
+    submitData.append("salary", formData.salary || "");
+    submitData.append("price", formData.price || "");
+
+    formData.specialization.forEach((spec) =>
+      submitData.append("specialization[]", spec)
+    );
+
+    // Append image file
+    if (formData.photo instanceof File) {
+      submitData.append("photo", formData.photo);
+    }
+
+    // Config for multipart/form-data
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    };
+
+    if (editingTrainer) {
+      await api.put(`/trainers/${editingTrainer._id}`, submitData, config);
+      toast.success("Trainer updated successfully");
+    } else {
+      await api.post("/trainers", submitData, config);
+      toast.success("Trainer added successfully");
+    }
+
+    setShowModal(false);
+    resetForm();
+    fetchTrainers();
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to save trainer");
+  }
+};
+
+// handle submit end  code with photo upload to backend
+
+
+// Handle Edit old code 
+  // const handleEdit = (trainer) => {
+  //   setEditingTrainer(trainer);
+  //   setFormData({
+  //     fullName: trainer.fullName,
+  //     gender: trainer.gender,
+  //     phone: trainer.phone,
+  //     price: trainer.price || 0,
+  //     email: trainer.email || '',
+  //     specialization: trainer.specialization,
+  //     experience: trainer.experience,
+  //     salary: trainer.salary,
+  //     photo: trainer.photo || null,
+  //   });
+  //   setPhotoPreview(trainer.photo || null);
+  //   setShowModal(true);
+  // };
+
+
+  // Handle Edit new code with photo upload to backend
+const handleEdit = (trainer) => {
+  setEditingTrainer(trainer);
+  setFormData({
+    fullName: trainer.fullName,
+    gender: trainer.gender,
+    phone: trainer.phone,
+    specialization: trainer.specialization,
+    experience: trainer.experience,
+    salary: trainer.salary,
+    price: trainer.price,
+    photo: null, // IMPORTANT
+  });
+  setPhotoPreview(trainer.photo || null);
+  setShowModal(true);
+};
+
+  // Handle Edit end 
+
+
+
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this trainer?')) {

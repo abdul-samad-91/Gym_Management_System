@@ -58,12 +58,18 @@ export default function Dashboard() {
           icon={TrendingUp}
           color="blue"
         />
-        <StatCard
+        {/* <StatCard
           title="Monthly Revenue"
           value={formatCurrency(stats.revenue.monthly)}
-          icon={DollarSign}
+          // icon={DollarSign}
           color="purple"
-        />
+        /> */}
+        <StatCard
+  title="Monthly Revenue"
+  value={formatCurrency(stats.revenue.monthly)}
+  icon={() => <span className="text-sm font-semibold">PKR</span>}
+  color="purple"
+/>
       </div>
 
       {/* Expiring Memberships Alert */}
