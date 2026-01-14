@@ -31,7 +31,7 @@ export default function Header() {
 
         <div className="flex items-center space-x-4 ml-4">
           {/* Online/Offline Status */}
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             {isOnline ? (
               <>
                 <Wifi className="w-5 h-5 text-green-600" />
@@ -43,16 +43,16 @@ export default function Header() {
                 <span className="text-sm text-orange-600">Offline</span>
               </>
             )}
-          </div>
+          </div> */}
 
           {/* Notifications */}
           <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
             <Bell className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full"></span>
+            <span className="absolute top-[-2px] right-1 w-5 h-5 bg-[#FB2C36] rounded-full"></span>
           </button>
 
           {/* User Menu */}
-          <div className="relative">
+          <div className="relative border-l-4">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
               className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"

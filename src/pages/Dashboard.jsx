@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, UserCheck, UserX, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
+import { Users, UserCheck, TrendingUp, AlertCircle, User } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
 import { formatCurrency, formatDate, getStatusColor } from '../utils/helpers';
 import toast from 'react-hot-toast';
+import { MoveRight } from 'lucide-react';
+import user from "../../Public/user.svg"
+import Icon from "../../Public/Icon.svg"
+import PakistaniRupee from "../../Public/pakistan-rupee-icon 1.svg"
+import Clock from "../../Public/Clock.svg"
+
+
+
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -35,15 +43,16 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Overview of your gym management</p>
+        <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with your gym today.</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5  ">
+
         <StatCard
           title="Total Members"
           value={stats.members.total}
-          icon={Users}
+          icon={() => <img src={user} alt="User Icon" className="w-6 h-6" />}
           color="primary"
         />
         <StatCard
@@ -55,7 +64,7 @@ export default function Dashboard() {
         <StatCard
           title="Today's Attendance"
           value={stats.attendance.today}
-          icon={TrendingUp}
+          icon={() => <img src={Icon} alt="User Icon" className="w-6 h-6" />}
           color="blue"
         />
         {/* <StatCard
@@ -65,11 +74,17 @@ export default function Dashboard() {
           color="purple"
         /> */}
         <StatCard
-  title="Monthly Revenue"
-  value={formatCurrency(stats.revenue.monthly)}
-  icon={() => <span className="text-sm font-semibold">PKR</span>}
-  color="purple"
-/>
+          title="Monthly Revenue"
+          value={formatCurrency(stats.revenue.monthly)}
+          icon={() => <img src={PakistaniRupee} alt="PKR Icon" className="w-6 h-6" />}
+          color="purple"
+        />
+        <StatCard
+          title="Monthly Revenue"
+          value={formatCurrency(stats.revenue.monthly)}
+          icon={() => <img src={Clock} alt="PKR Icon" className="w-6 h-6" />}
+          color="purple"
+        />
       </div>
 
       {/* Expiring Memberships Alert */}
@@ -97,37 +112,82 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Members */}
-        <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Members</h2>
-            <Link to="/members" className="text-sm text-primary-600 hover:text-primary-700">
-              View All
-            </Link>
-          </div>
-          <div className="space-y-3">
-            {stats.recentMembers.map((member) => (
-              <div key={member._id} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
-                {/* <img
-                  src={member.photo || '/default-avatar.png'}
-                  alt={member.fullName}
-                  className="w-10 h-10 rounded-full object-cover"
-                /> */}
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">{member.fullName}</p>
-                  <p className="text-sm text-gray-500">{member.memberId}</p>
-                </div>
-                <span className={`badge ${getStatusColor(member.membershipStatus)}`}>
-                  {member.membershipStatus}
-                </span>
-              </div>
-            ))}
+       <div className="card">
+  {/* Header */}
+  <div className="p-4 border-b flex items-center justify-between">
+    <div>
+      <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+      <p className="text-sm text-gray-600">Latest member actions</p>
+    </div>
+
+    <Link
+      to="/members"
+      className="text-sm text-primary-600 hover:text-primary-700 flex items-center gap-1"
+    >
+      View All Activity
+      <MoveRight size={18} />
+    </Link>
+  </div>
+
+  {/* Activity List */}
+  <div className="p-4 space-y-3">
+    {(stats.recentMembers ?? []).map((member) => {
+      const planColors = {
+        Basic: { bg: "bg-blue-100", text: "text-blue-700"},
+        Premium: { bg: "bg-orange-100", text: "text-orange-700" },
+        Standard: { bg: "bg-green-100", text: "text-green-500" },
+      };
+      
+      const planName = member.currentPlan?.planName || 'No Plan';
+      const colors = planColors[planName] || { bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200" };
+      
+      return (
+      <div
+        key={member._id}
+        className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition"
+      >
+        {/* Avatar */}
+        <img
+          src={member.photo || "/default-avatar.png"}
+          // alt={member.fullName}
+          className="w-10 h-10 rounded-full object-cover ring-2 ring-primary-100"
+        />
+
+        {/* Info */}
+        <div className="flex-1">
+          <p className="font-medium text-gray-900">{member.fullName}</p>
+          <div className='flex gap-2 items-center'>
+            <p className="text-xs text-gray-500">
+              ID: {member.memberId}
+            </p>
+            <span className={`px-2 py-0.5 text-xs rounded-full font-medium border ${colors.bg} ${colors.text} `}>
+              {planName}
+            </span>
           </div>
         </div>
 
+        {/* Status pill */}
+        <span
+          className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
+            member.membershipStatus
+          )}`}
+        >
+          {member.membershipStatus}
+        </span>
+        
+      </div>
+    );
+    })}
+  </div>
+</div>
+
+
         {/* Plan Distribution */}
-        <div className="card">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Plan Distribution</h2>
-          <div className="space-y-3">
+        {/* <div className="card">
+         <div className='mb-2 border-b-2  p-4 '> <h2 className="text-lg font-semibold text-gray-900 mb-4">Plan Distribution</h2>
+          <h4 className='p'>Member distribution across plans</h4></div>
+         
+          <div className="space-y-3  p-4">
             {stats.planDistribution.map((plan) => (
               <div key={plan._id} className="flex items-center justify-between">
                 <span className="text-gray-700">{plan.planName}</span>
@@ -146,7 +206,68 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
+      </div> */}
+
+
+        <div className="card  flex flex-col ">
+          {/* Header */}
+          <div className="p-4 border-b flex flex-col gap-1">
+            <h2 className="text-lg font-semibold text-gray-900">Plan Distribution</h2>
+            <p className="text-sm text-gray-600">Member distribution across plans</p>
+          </div>
+
+          {/* Plans */}
+         <div className='flex flex-col justify-between h-full'>
+           <div className="p-4 space-y-5 ">
+
+            {(stats.planDistribution ?? []).map((plan) => {
+              const percent =
+                stats?.members?.total
+                  ? (plan.count / stats.members.total) * 100
+                  : 0;
+
+              const planColors = {
+                Basic: "bg-blue-600",
+                Premium: "bg-orange-500",
+                Standard: "bg-green-500",
+              };
+
+
+              return (
+                <div key={plan._id} className="space-y-1.5 ">
+
+                  {/* Label + Count */}
+                  <div className="flex justify-between text-sm ">
+                    <span className="text-gray-700">{plan.planName}</span>
+                    <span className="font-medium text-gray-900">
+                      {plan.count} members
+                    </span>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="w-full bg-gray-200 h-2 rounded-full">
+                    <div
+                      className={`${planColors[plan.planName] || "bg-primary-600"} h-2 rounded-full`}
+                      style={{ width: `${percent}%` }}
+                    />
+
+                  </div>
+
+                  {/* Percentage */}
+                  <p className="text-xs text-gray-500 text-right">{percent.toFixed(1)}%</p>
+                </div>
+              );
+            })}
+            {/* Footer Total */}
+
+          </div>
+          <div className="px-4 py-3 border-t text-sm font-semibold flex justify-between">
+            Total Active Members: <span>{stats.members.total}</span>
+          </div>
+         </div>
+        </div>
       </div>
+
 
       {/* Recent Payments */}
       <div className="card">

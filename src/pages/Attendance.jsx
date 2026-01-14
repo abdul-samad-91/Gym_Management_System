@@ -5,6 +5,9 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
 import { formatDate, formatTime, exportToCSV } from '../utils/helpers';
 import toast from 'react-hot-toast';
+import checkin from "../../public/checkin.svg"
+import checkout from "../../public/checkout.svg"
+import {UserCheck} from 'lucide-react'
 
 export default function Attendance() {
   const [attendance, setAttendance] = useState([]);
@@ -96,15 +99,16 @@ export default function Attendance() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Attendance</h1>
-          <p className="text-gray-600">Mark and track member attendance</p>
+          <h1 className="text-2xl font-normal text-gray-900">Attendance Management</h1>
+          <p className="text-gray-600">Track daily member check-ins and check-outs</p>
         </div>
         <button
           onClick={() => setShowCheckInModal(true)}
           className="btn btn-primary flex items-center space-x-2"
         >
-          <CheckCircle className="w-5 h-5" />
-          <span>Mark Check-in</span>
+          {/* <CheckCircle className="w-5 h-5" /> */}
+          <img src={checkin} alt="Mark checkin button" />
+          <span className='font-normal'>Mark Check-in</span>
         </button>
       </div>
 
@@ -130,20 +134,26 @@ export default function Attendance() {
 
       {/* Filters */}
       <div className="card">
-        <div className="flex items-center space-x-4">
+
+        <div className="flex  space-x-4 justify-between items-center">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-lg font-normal text-gray-900">Attendance Records</h2>
+            <p className='text-gray-600'>View and manage today's attendance</p>
+          </div>
           <div className="flex items-center space-x-2">
-            <Calendar className="w-5 h-5 text-gray-500" />
+            {/* <Calendar className="w-5 h-5 text-gray-500" /> */}
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               className="input"
             />
-          </div>
-          <button onClick={handleExport} className="btn btn-secondary ml-auto">
+            <button onClick={handleExport} className="btn btn-secondary ml-auto flex items-center">
             <Download className="w-5 h-5 mr-2" />
             Export
           </button>
+          </div>
+          
         </div>
       </div>
 
@@ -158,11 +168,14 @@ export default function Attendance() {
                   Member
                 </th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">
-                  Check-in
+                Check-in Time
                 </th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">
-                  Check-out
+                  Check-out Time
                 </th>
+                {/* <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">
+                 Durations
+                </th> */}
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">Type</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-gray-700">
                   Status
@@ -176,21 +189,27 @@ export default function Attendance() {
               {attendance.map((att) => (
                 <tr key={att._id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-3 px-4">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 ">
                       {/* <img
                         src={att.member.photo || '/default-avatar.png'}
-                        alt={att.member.fullName}
-                        className="w-10 h-10 rounded-full object-cover"
+                        // alt={att.member.fullName}
+                        className="w-10 h-10 rounded-full object-cover border border-gray-200"
                       /> */}
+                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-green-500 
+                          flex items-center justify-center text-white font-semibold text-lg">
+                        {att.member.fullName?.charAt(0)}
+                        {att.member.fullName?.split(" ")[1]?.charAt(0)}
+                      </div>
+
                       <div>
                         <p className="font-medium text-gray-900">{att.member.fullName}</p>
                         <p className="text-sm text-gray-500">{att.member.memberId}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-gray-700">{formatTime(att.checkInTime)}</td>
+                  <td className="py-3 px-4 text-gray-700 flex gap-1"> <UserCheck  className='text-green-400'/> {formatTime(att.checkInTime)}</td>
                   <td className="py-3 px-4 text-gray-700">
-                    {att.checkOutTime ? formatTime(att.checkOutTime) : '-'}
+                    {att.checkOutTime ? formatTime(att.checkOutTime) : '__'}
                   </td>
                   <td className="py-3 px-4">
                     <span className="badge badge-info">{att.attendanceType}</span>
@@ -235,10 +254,15 @@ export default function Attendance() {
         title="Mark Check-in"
         size="md"
       >
-        <div className="space-y-4">
+        <p className='mb-5'>Select a member to checkIn</p>
+        <hr />
+
+        <div className="space-y-4 ">
+        
           <div>
-            <label className="label">Search Member</label>
-            <div className="relative">
+            <label className="label mt-5 mb-3">Search Member</label>
+            
+            <div className="relative ">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
@@ -250,6 +274,26 @@ export default function Attendance() {
                 className="input pl-10"
                 placeholder="Search by name, ID, or phone..."
               />
+            </div>
+            <div>
+              <div>
+              <label className="label mt-5 mb-3">Or Select Member</label>
+              <select
+                value={selectedMember?._id || ''}
+                onChange={(e) => {
+                  const member = members.find(m => m._id === e.target.value);
+                  if (member) setSelectedMember(member);
+                }}
+                className="input w-full"
+              >
+                <option value="">Select a Member</option>
+                {members.length > 0 && members.map((member) => (
+                  <option key={member._id} value={member._id}>
+                    {member.fullName} - {member.memberId}
+                  </option>
+                ))}
+              </select>
+            </div>
             </div>
           </div>
 
@@ -286,23 +330,23 @@ export default function Attendance() {
             </div>
           )}
 
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-between space-x-2 pt-4">
             <button
               onClick={() => {
                 setShowCheckInModal(false);
                 setSearchTerm('');
                 setSelectedMember(null);
               }}
-              className="btn btn-secondary"
+              className="btn btn-secondary w-1/2"
             >
               Cancel
             </button>
             <button
               onClick={() => selectedMember && handleCheckIn(selectedMember._id)}
               disabled={!selectedMember}
-              className="btn btn-primary"
+              className="btn btn-primary w-1/2"
             >
-              <CheckCircle className="w-5 h-5 mr-2" />
+              {/* <CheckCircle className="w-5 h-5 mr-2 " /> */}
               Check In
             </button>
           </div>

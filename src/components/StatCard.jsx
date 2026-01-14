@@ -9,9 +9,14 @@ export default function StatCard({ title, value, icon: Icon, color = 'primary', 
   };
 
   return (
-    <div className="card hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
+    <div className="card hover:shadow-md transition-shadow w-56 ">
+      <div className="flex  flex-col w-32 h-32 gap-4 ">
+         {Icon && (
+          <div className={`p-3 rounded-lg  w-12 h-12 ${colorClasses[color]} `}>
+            <Icon className="w-6 h-6" />
+          </div>
+        )}
+        <div className="flex-1 ">
           <p className="text-sm font-medium text-gray-600">{title}</p>
           <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
           {trend && (
@@ -21,13 +26,12 @@ export default function StatCard({ title, value, icon: Icon, color = 'primary', 
             </p>
           )}
         </div>
-        {Icon && (
-          <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
-            <Icon className="w-6 h-6" />
-          </div>
-        )}
+       
       </div>
     </div>
   );
 }
+
+
+
 
