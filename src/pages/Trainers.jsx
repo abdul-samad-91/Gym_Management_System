@@ -313,7 +313,8 @@ const handleEdit = (trainer) => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name */}
-          <div>
+         <div className='grid grid-cols-2 gap-4'>
+           <div>
             <label className="label">Full Name *</label>
             <input
               type="text"
@@ -324,9 +325,7 @@ const handleEdit = (trainer) => {
             />
           </div>
 
-          {/* Gender & Experience */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
+           <div>
               <label className="label">Gender *</label>
               <select
                 value={formData.gender}
@@ -339,6 +338,23 @@ const handleEdit = (trainer) => {
                 <option value="Other">Other</option>
               </select>
             </div>
+         </div>
+
+          {/* Gender & Experience */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* <div>
+              <label className="label">Gender *</label>
+              <select
+                value={formData.gender}
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                className="input"
+                required
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div> */}
             <div>
               <label className="label">Experience (years) *</label>
               <input
@@ -350,9 +366,8 @@ const handleEdit = (trainer) => {
                 required
               />
             </div>
-          </div>
 
-          {/* Phone */}
+             {/* Phone */}
           <div>
             <label className="label">Phone Number *</label>
             <input
@@ -363,10 +378,14 @@ const handleEdit = (trainer) => {
               required
             />
           </div>
+          </div>
+
+
+<div className='grid grid-cols-2 gap-4'>
 
 {/* Trainer Price  */}
 <div>
-  <label className="label">Price *</label>
+  <label className="label">Price Per Session*</label>
   <input
     type="number"
     min="0"
@@ -380,15 +399,15 @@ const handleEdit = (trainer) => {
 
 
           {/* Upload Photo */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-center   ">
             <img
               src={photoPreview || '/default-avatar.png'}
-              alt="Preview"
+              // alt="Preview"
               className="w-24 h-24 rounded-full object-cover"
             />
             <label className="btn btn-secondary cursor-pointer flex items-center">
               <Upload className="w-5 h-5 mr-2" />
-              Upload Photo
+              Choose File
               <input
                 type="file"
                 accept="image/*"
@@ -396,6 +415,8 @@ const handleEdit = (trainer) => {
                 className="hidden"
               />
             </label>
+          </div>
+
           </div>
 
           {/* Specialization */}
