@@ -147,11 +147,16 @@ export default function Dashboard() {
         className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition"
       >
         {/* Avatar */}
-        <img
-          src={member.photo || "/default-avatar.png"}
-          // alt={member.fullName}
-          className="w-10 h-10 rounded-full object-cover ring-2 ring-primary-100"
-        />
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-500 
+                          flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+          {member.fullName ? (
+            <>
+              {member.fullName.charAt(0)}{member.fullName.split(' ')[1]?.charAt(0) || ''}
+            </>
+          ) : (
+            '??'
+          )}
+        </div>
 
         {/* Info */}
         <div className="flex-1">

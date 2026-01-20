@@ -5,7 +5,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 import toast from 'react-hot-toast';
-import dollar  from '../../public/dollar.svg';
+// import dollar  from '../../public/dollar.svg';
+import pakistaniRupee  from '../../public/pakistan-rupee-icon 1.svg';
 import icon4  from '../../public/icon4.svg';
 import icon5  from '../../public/icon5.svg';
 import { Check } from 'lucide-react';
@@ -157,7 +158,7 @@ export default function Plans() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Membership Plans</h1>
-          <p className="text-gray-600">Manage your gym membership plans</p>
+          <p className="text-gray-600 mt-1">Manage your gym membership plans</p>
         </div>
         <button
           onClick={() => {
@@ -171,12 +172,69 @@ export default function Plans() {
         </button>
       </div>
 
+
+
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+
+  {/* Card 1 */}
+  <div className="card border border-l-4 border-l-[#D339F6] border-[#D339F6] p-4">
+    <div className="flex items-center flex-col justify-between gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Active Plans</p>
+      <p className="text-xl font-semibold text-blue-900">28</p>
+    </div>
+  </div>
+
+  {/* Card 2 */}
+  <div className="card border border-l-4 border-l-[#00A63E] border-[#00A63E] p-4">
+    <div className="flex items-center flex-col justify-between gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Total Subscribers</p>
+      <p className="text-xl font-semibold text-blue-900">145</p>
+    </div>
+  </div>
+
+  {/* Card 3 */}
+  <div className="card border border-l-4 border-l-[#155DFC] border-[#155DFC] p-4">
+    <div className="flex items-center flex-col justify-between gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Monthly Revenue</p>
+      <p className="text-xl font-semibold text-blue-900">97</p>
+    </div>
+  </div>
+
+  {/* Card 4 */}
+  <div className="card border border-l-4 border-l-[#0096DC] border-[#0096DC] p-4">
+    <div className="flex items-center justify-between flex-col gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Top Performing Plan</p>
+      <p className="text-xl font-semibold text-blue-900">6</p>
+    </div>
+  </div>
+
+  {/* Card 5 */}
+  <div className="card border border-l-4 border-l-[#FF4444] border-[#FF4444] p-4">
+    <div className="flex items-center justify-between flex-col gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Least Performing Plan</p>
+      <p className="text-xl font-semibold text-blue-900">0</p>
+    </div>
+  </div>
+
+  {/* Card 6 */}
+  <div className="card border border-l-4 border-l-[#F4AF00] border-[#F4AF00] p-4 ">
+    <div className="flex items-center justify-between flex-col gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Expiring Subscriptions</p>
+      <p className="text-xl font-semibold text-blue-900">18 </p>
+    </div>
+  </div>
+
+</div>
+
+
+
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {plans.map((plan) => (
           // fd;lfhfldashjafjadsf;da
           <div key={plan._id} className="card hover:shadow-lg transition-shadow ">
-           <div className='w-12 bg-[#10B981] items center justify-center flex p-2 rounded-md mb-4'>
-             <img src= {dollar}  alt="" className='rounded-sm w-7 '/>
+           <div className='w-12 bg-gray-200 items center justify-center flex p-2 rounded-md mb-4'>
+             <img src= {pakistaniRupee}  alt="" className='rounded-sm w-7 '/>
            </div>
             <div className="flex items-start justify-between mb-4">
               <div>
@@ -190,22 +248,24 @@ export default function Plans() {
               {/* Buttons moved to card footer for consistent placement */}
             </div>
 <hr />
-<div className=' flex items-center gap-3 p-5'>
+<div className=' flex items-center py-5 gap-3'>
   
 
-  <div className='flex  gap-3'>
+  <div className='flex  gap-3 '>
 
     <div className='w-14 bg-slate-50 flex items-center justify-center rounded-lg p-3'>
-      <img src={icon4} alt="" className='w-6 '/></div>
+      <img src={icon4} alt="" className='w-6 '/>
+      </div>
     <div>
       <p>Members</p>
       <h3>{planMemberCounts[plan._id] || 0}</h3>
     </div>
   </div>
 
-  <div  className='flex  gap-3'>
+  <div  className='flex  gap-3 '>
     <div className='w-14 bg-slate-50 flex items-center justify-center rounded-lg p-3'>
-      <img src={icon5} alt="" className='w-6' /></div>
+      <img src={icon5} alt="" className='w-6' />
+      </div>
     <div><p>Duration</p>
       <h3>{plan.duration.value} {plan.duration.unit}</h3>
     </div>
@@ -219,7 +279,8 @@ export default function Plans() {
               </span>
             </div> */}
 
-                <div className="space-y-2 mb-4 p-4">
+                <div className="space-y-2 mb-4 p-4 ">
+                  <p className='text-sm text-gray-500 mb-3'>Features included:</p>
                   <p className="text-sm text-gray-600">{plan.description}</p>
 
                   <div className="space-y-2">

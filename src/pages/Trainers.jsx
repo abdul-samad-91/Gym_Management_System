@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Users, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, Upload , Award, Mail, Phone} from 'lucide-react';
 import Modal from '../components/Modal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
@@ -15,7 +15,7 @@ export default function Trainers() {
     fullName: '',
     gender: 'Male',
     phone: '',
-    // email: '',
+    email: '',
     specialization: [],
     experience: 0,
     salary: '',
@@ -110,6 +110,7 @@ const handleSubmit = async (e) => {
     submitData.append("fullName", formData.fullName);
     submitData.append("gender", formData.gender);
     submitData.append("phone", formData.phone);
+    submitData.append("email", formData.email || "");
     submitData.append("experience", formData.experience);
     submitData.append("salary", formData.salary || "");
     submitData.append("price", formData.price || "");
@@ -175,6 +176,7 @@ const handleEdit = (trainer) => {
     fullName: trainer.fullName,
     gender: trainer.gender,
     phone: trainer.phone,
+    email: trainer.email || '',
     specialization: trainer.specialization,
     experience: trainer.experience,
     salary: trainer.salary,
@@ -182,8 +184,7 @@ const handleEdit = (trainer) => {
     photo: null, // IMPORTANT
   });
   setPhotoPreview(trainer.photo || null);
-  setShowModal(true);
-};
+  setShowModal(true);};
 
   // Handle Edit end 
 
@@ -224,8 +225,8 @@ const handleEdit = (trainer) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Trainers</h1>
-          <p className="text-gray-600">Manage your gym trainers</p>
+          <h1 className="text-2xl font-normal   text-gray-900">Membership Plans</h1>
+          <p className="text-gray-500 mt-2 text-xl">Manage subscription plans and pricing</p>
         </div>
         <button
           onClick={() => {
@@ -239,61 +240,174 @@ const handleEdit = (trainer) => {
         </button>
       </div>
 
-      {/* Trainers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {trainers.map((trainer) => (
-          <div key={trainer._id} className="card hover:shadow-lg transition-shadow">
-            <div className="flex items-start space-x-4">
-              <img
-                src={trainer.photo ? trainer.photo : '/default-avatar.png'}
-                alt={trainer.fullName}
-                className="w-16 h-16 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{trainer.fullName}</h3>
-                    <p className="text-sm text-gray-500">{trainer.trainerId}</p>
-                    <p className="text-sm text-gray-600 mt-1">{trainer.experience} years exp.</p>
-                    {/* <p className="text-sm text-gray-600 mt-1"> ${trainer.price} per session</p> */}
-                  </div>  
-                  <div className="flex space-x-1">
-                    <button
-                      onClick={() => handleEdit(trainer)}
-                      className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(trainer._id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
 
-                <div className="mt-3 space-y-2">
-                  <p className="text-sm text-gray-600">📞 {trainer.phone}</p>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {trainer.specialization.map((spec) => (
-                      <span key={spec} className="badge badge-info text-xs">
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-gray-200">
-                    <Users className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">
-                      {trainer.assignedMembers?.length || 0} members
-                    </span>
-                  </div>
-                </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+
+  {/* Card 1 */}
+  <div className="card border border-l-4 border-l-[#D339F6] border-[#D339F6] p-4">
+    <div className="flex items-center flex-col justify-between gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Total Trainers</p>
+      <p className="text-xl font-semibold text-blue-900">28</p>
+    </div>
+  </div>
+
+  {/* Card 2 */}
+  <div className="card border border-l-4 border-l-[#00A63E] border-[#00A63E] p-4">
+    <div className="flex items-center flex-col justify-between gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Active Trainers</p>
+      <p className="text-xl font-semibold text-blue-900">145</p>
+    </div>
+  </div>
+
+  {/* Card 3 */}
+  <div className="card border border-l-4 border-l-[#155DFC] border-[#155DFC] p-4">
+    <div className="flex items-center flex-col justify-between gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Active Clients</p>
+      <p className="text-xl font-semibold text-blue-900">97</p>
+    </div>
+  </div>
+
+  {/* Card 4 */}
+  <div className="card border border-l-4 border-l-[#0096DC] border-[#0096DC] p-4">
+    <div className="flex items-center justify-between flex-col gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Avg Rating</p>
+      <p className="text-xl font-semibold text-blue-900">6</p>
+    </div>
+  </div>
+
+  {/* Card 5 */}
+  <div className="card border border-l-4 border-l-[#FF4444] border-[#FF4444] p-4">
+    <div className="flex items-center justify-between flex-col gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Avg Clients per Trainer</p>
+      <p className="text-xl font-semibold text-blue-900">0</p>
+    </div>
+  </div>
+
+  {/* Card 6 */}
+  <div className="card border border-l-4 border-l-[#F4AF00] border-[#F4AF00] p-4 ">
+    <div className="flex items-center justify-between flex-col gap-2">
+    <p className="text-sm text-gray-500 mt-2 font-normal">Unassigned Members</p>
+      <p className="text-xl font-semibold text-blue-900">18 </p>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+      {/* Trainers Grid */}
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {trainers.map((trainer) => (
+    <div
+      key={trainer._id}
+      className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
+    >
+      {/* ================= HEADER ================= */}
+      <div className="flex items-start gap-4">
+        <img
+          src={trainer.photo ? trainer.photo : "/default-avatar.png"}
+          alt={trainer.fullName}
+          className="w-14 h-14 rounded-lg object-cover"
+        />
+
+        <div className="flex-1">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-semibold text-gray-900 text-base">
+                {trainer.fullName}
+              </h3>
+
+              <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                <span className="flex items-center gap-1  font-normal text-xl">
+                  ⭐ 4.9
+                </span>
+                <span className="flex items-center gap-1 text-xl">
+                  <Award className="w-6 h-6 mt-3" />
+                  {trainer.experience} years
+                </span>
               </div>
             </div>
+
+            <div className="flex space-x-1">
+              <button
+                onClick={() => handleEdit(trainer)}
+                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+              >
+                <Edit className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handleDelete(trainer._id)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-        ))}
+        </div>
       </div>
+
+      <hr className="my-4" />
+
+
+        {/* Contact Info */}
+        <div className="space-y-2 text-sm text-gray-600 mb-4">
+          <div className="flex items-center gap-3 text-xl text-gray-500">
+            <Mail className="w-5 h-6 text-gray-600" />
+            <span>{trainer.email}</span>
+          </div>
+          <div className="flex items-center gap-3 text-xl text-gray-500">
+            <Phone className="w-5 h-6 text-gray-600" />
+            <span>{trainer.phone}</span>
+          </div>
+        </div>
+
+<hr />
+        {/* Specializations */}
+        <div className='mt-5'>
+          <p className="text-sm font-medium text-gray-700 mb-2">
+            Specializations:
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {trainer.specialization.map((spec) => (
+              <span
+                key={spec}
+                className="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600"
+              >
+                {spec}
+              </span>
+            ))}
+          </div>
+        </div>
+    
+
+      {/* ================= FOOTER ================= */}
+      <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+        <div className="flex items-center gap-3 text-sm text-gray-600">
+          <div className='bg-gray-300 p-3 rounded-md'>
+            <Users className="w-6 h-6 text-blue-800" />
+          </div>
+          <div>
+            <div className='text-sm font-normal'> Active Clients</div>
+            <div className='text-xl font-semibold'>{trainer.assignedMembers?.length || 0}</div>
+          </div>
+          {/* <span className='text-xl'>
+            
+          </span> */}
+        </div>
+
+        <button className="px-4 py-1.5 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 ">
+          View Profile
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+      
 
       {trainers.length === 0 && (
         <div className="card text-center py-12">
@@ -356,12 +470,11 @@ const handleEdit = (trainer) => {
               </select>
             </div> */}
             <div>
-              <label className="label">Experience (years) *</label>
+              <label className="label">Email:</label>
               <input
-                type="number"
-                min="0"
-                value={formData.experience}
-                onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="input"
                 required
               />
@@ -416,8 +529,20 @@ const handleEdit = (trainer) => {
               />
             </label>
           </div>
-
+   
           </div>
+
+         <div>
+              <label className="label">Experience (years) *</label>
+              <input
+                type="number"
+                min="0"
+                value={formData.experience}
+                onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                className="input"
+                required
+              />
+            </div>
 
           {/* Specialization */}
           <div>

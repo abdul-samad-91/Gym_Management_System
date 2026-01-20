@@ -122,8 +122,8 @@ export default function AddMember() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-4">
+    <div className="space-y-6 ">
+      <div className="flex items-center space-x-4 ">
         <button onClick={() => navigate('/members')} className="btn btn-secondary">
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -375,7 +375,7 @@ export default function AddMember() {
 
 
 {/* Submit  */}
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end space-x-2 ">
           <button
             type="button"
             onClick={() => navigate('/members')}

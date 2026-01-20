@@ -10,6 +10,7 @@ import checkout from "../../public/checkout.svg"
 import {UserCheck} from 'lucide-react'
 import checkin2 from "../../public/checkin2.svg"
 import user from "../../Public/user.svg"
+  import icon4 from "../../public/icon4.svg"
 
 
 
@@ -24,6 +25,7 @@ export default function Attendance() {
   const [selectedMember, setSelectedMember] = useState(null);
   const [quickTerm, setQuickTerm] = useState('');
   const [quickLoading, setQuickLoading] = useState(false);
+
 
   const stats = useMemo(() => {
     const total = attendance.length;
@@ -242,10 +244,10 @@ export default function Attendance() {
       </div>
 
       {/* Peak Hour */}
-      <div className="card border border-l-4 border-l-[#0096DC] border-[#0096DC] p-4">
+      <div className="card border border-l-4 border-l-[#0096DC] border-[#0096DC] p-4 ">
         <div className="flex flex-col items-center justify-between">
           <div className='flex items-center justify-between w-28'>
-          <p className="text-2xl font-semibold text-blue-900 mt-1">{stats.peakHour}</p>
+          <p className="text-xl font-semibold text-blue-900 mt-1">{stats.peakHour}</p>
 <img src={user} alt="User Icon" className="w-6 h-6 bg-gray-100 p-1 rounded-sm" />
           </div>
           <p className="text-sm text-gray-500 font-normal mt-2">Peak Hour</p>
@@ -256,7 +258,7 @@ export default function Attendance() {
       <div className="card border border-l-4 border-l-[#FF4444] border-[#FF4444] p-4">
         <div className="flex flex-col items-center justify-between">
           <div className='flex items-center justify-between w-28'>
-            <p className="text-2xl font-semibold text-blue-900 mt-1">{stats.avgDuration}</p>
+            <p className="text-xl font-semibold text-blue-900 mt-1"> {stats.avgDuration}</p>
           <img src={user} alt="User Icon" className="w-6 h-6 bg-gray-100 p-1 rounded-sm" />
           </div>
           <p className="text-sm text-gray-500 font-normal mt-2">Avg Session Duration</p>
@@ -267,7 +269,7 @@ export default function Attendance() {
       <div className="card border border-l-4 border-l-[#F4AF00] border-[#F4AF00] p-4">
         <div className="flex flex-col items-center justify-between">
           <div className='flex items-center justify-between w-28'>
-            <p className="text-2xl font-semibold text-blue-900 mt-1">{stats.avgDuration}</p>
+            <p className="text-xl font-semibold text-blue-900 mt-1">{stats.avgDuration}</p>
           <img src={user} alt="User Icon" className="w-6 h-6 bg-gray-100 p-1 rounded-sm" />
           </div>
           {/* <p className="text-3xl font-bold text-yellow-900 mt-1">_</p> */}
@@ -306,7 +308,7 @@ export default function Attendance() {
       <div className="w-full px-6 py-12 font-sans bg-[#E5E7EB] rounded  ">
 
       {/* First Div */}
-      <div className="mb-6">
+      <div className="mb-6 ">
         <h2 className="text-xl font-normal mb-3">
          Quick Check-In
         </h2>
@@ -317,24 +319,49 @@ export default function Attendance() {
 
       {/* Second Div */}
       <div className="flex items-center gap-24">
+        <div className='flex gap-2 w-full max-w-[70%] items-center bg-white rounded-md py-1'> 
+          <img src={icon4} alt="" className='w-10 h-10 pl-3 flex-shrink-0'/>
         <input
           type="text"
           value={quickTerm}
           onChange={(e) => setQuickTerm(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') handleQuickCheckIn(); }}
           placeholder="Enter member ID or enter manually"
-          className="w-full max-w-[70%] px-4 py-2 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
+          className="w-full  px-2 py-3 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-0"
+        /></div>
+       <div>
+         <button
           onClick={handleQuickCheckIn}
           disabled={quickLoading}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex items-center gap-2 disabled:opacity-50"
+          className="px-6 py-4 bg-[#4F46E5] text-white rounded-md hover:bg-blue-700 transition flex items-center gap-2 disabled:opacity-50"
         >
           <img src={checkin2} alt="" /> {quickLoading ? 'Checking...' : 'Check in'}
         </button>
+       </div>
       </div>
 
     </div>
+
+    {/* Search by member name and id */}
+
+<div>
+  <div className='flex items-center gap-0 bg-[#E5E7EB] border border-gray-300 rounded-xl '>
+   <Search className='w-10 h-10 pl-3 flex-shrink-0 text-gray-400 '/>
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={(e) => {
+        setSearchTerm(e.target.value);
+        searchMembers(e.target.value);
+      }}
+      className="w-full px-4 py-3 bg-[#E5E7EB] focus:outline-none focus:bg-white border-0 rounded-r-xl "
+      placeholder="Search members by name, ID..."
+    />
+  </div>
+</div>
+
+
+
 
       {/* Filters */}
       <div className="card ">
