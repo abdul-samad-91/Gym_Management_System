@@ -4,6 +4,8 @@ import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 // import { Switch } from "@/components/ui/switch"
+import CustomSwitch  from '../components/CustomSwitch.jsx';
+
 export default function Settings() {
   const { user } = useAuthStore();
   const [activeTab, setActiveTab] = useState('profile');
@@ -32,6 +34,7 @@ export default function Settings() {
 
   return (
     <div className="space-y-6">
+    
       <div>
         <h1 className="text-2xl font-semibold text-gray-900">Settings</h1>
         <p className="text-gray-600">Manage your account and system preferences</p>
@@ -157,7 +160,7 @@ export default function Settings() {
               <h2 className="text-lg font-normal text-gray-900 ">
                 Email Notifications
               </h2>
-              <p className='mb-4 text-gray-500'>Choose what updates you want to receive</p>
+              <p className='mb-4 text-gray-500 text-sm'>Choose what updates you want to receive</p>
               <hr />
 
               <div className="space-y-4 mt-4 ">
@@ -170,7 +173,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <div>
-                    <ToggleRight />
+                 <CustomSwitch />
                   </div>
                 </div>
                 <hr />
@@ -185,7 +188,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <div>
-                    <ToggleRight />
+                      <CustomSwitch />
                   </div>
                 </div>
                 <hr />
@@ -197,7 +200,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <div>
-                    <ToggleRight />
+                     <CustomSwitch />
                   </div>
                 </div>
                 <hr />
@@ -209,7 +212,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <div>
-                    <ToggleRight />
+                    <CustomSwitch />
                   </div>
                 </div>
 
@@ -223,7 +226,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <div>
-                   <ToggleRight />
+                   <CustomSwitch />
                   </div>
                 </div>
 

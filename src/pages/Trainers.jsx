@@ -7,10 +7,19 @@ import toast from 'react-hot-toast';
 
 export default function Trainers() {
   const [trainers, setTrainers] = useState([]);
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingTrainer, setEditingTrainer] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [stats, setStats] = useState({
+    totalTrainers: 0,
+    activeTrainers: 0,
+    activeClients: 0,
+    avgRating: 0,
+    avgClientsPerTrainer: 0,
+    unassignedMembers: 0
+  });
   const [formData, setFormData] = useState({
     fullName: '',
     gender: 'Male',
@@ -36,7 +45,13 @@ export default function Trainers() {
 
   useEffect(() => {
     fetchTrainers();
+    fetchMembers();
   }, []);
+
+  // Recalculate stats whenever trainers or members change
+  useEffect(() => {
+    calculateStats(trainers, members);
+  }, [trainers, members]);
 
   const fetchTrainers = async () => {
     try {
@@ -49,6 +64,61 @@ export default function Trainers() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchMembers = async () => {
+    try {
+      const response = await api.get('/members');
+      if (response.data.success) {
+        setMembers(response.data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch members');
+    }
+  };
+
+  const calculateStats = (trainersList, membersList) => {
+    if (!trainersList.length) {
+      setStats({
+        totalTrainers: 0,
+        activeTrainers: 0,
+        activeClients: 0,
+        avgRating: 0,
+        avgClientsPerTrainer: 0,
+        unassignedMembers: 0
+      });
+      return;
+    }
+
+    const totalTrainers = trainersList.length;
+    const activeTrainers = trainersList.filter(t => t.isActive).length;
+    
+    // Count active clients (members with Active status and assigned trainer)
+    const activeClients = membersList.filter(
+      m => m.membershipStatus === 'Active' && m.assignedTrainer
+    ).length;
+
+    // Calculate average rating (placeholder - you can add rating field to trainer model)
+    const avgRating = 4.8; // Fixed for now, add rating system later
+    
+    // Average clients per trainer
+    const avgClientsPerTrainer = activeTrainers > 0 
+      ? (activeClients / activeTrainers).toFixed(1)
+      : 0;
+    
+    // Unassigned members - check for null, undefined, and empty string
+    const unassignedMembers = membersList.filter(
+      m => m.membershipStatus === 'Active' && (!m.assignedTrainer || m.assignedTrainer === '' || m.assignedTrainer === null)
+    ).length;
+
+    setStats({
+      totalTrainers,
+      activeTrainers,
+      activeClients,
+      avgRating,
+      avgClientsPerTrainer,
+      unassignedMembers
+    });
   };
 
   // Handle photo selection & upload
@@ -142,6 +212,7 @@ const handleSubmit = async (e) => {
     setShowModal(false);
     resetForm();
     fetchTrainers();
+    fetchMembers();
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to save trainer");
   }
@@ -197,6 +268,7 @@ const handleEdit = (trainer) => {
         await api.delete(`/trainers/${id}`);
         toast.success('Trainer deleted successfully');
         fetchTrainers();
+        fetchMembers();
       } catch (error) {
         toast.error('Failed to delete trainer');
       }
@@ -247,7 +319,7 @@ const handleEdit = (trainer) => {
   <div className="card border border-l-4 border-l-[#D339F6] border-[#D339F6] p-4">
     <div className="flex items-center flex-col justify-between gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Total Trainers</p>
-      <p className="text-xl font-semibold text-blue-900">28</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.totalTrainers}</p>
     </div>
   </div>
 
@@ -255,7 +327,7 @@ const handleEdit = (trainer) => {
   <div className="card border border-l-4 border-l-[#00A63E] border-[#00A63E] p-4">
     <div className="flex items-center flex-col justify-between gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Active Trainers</p>
-      <p className="text-xl font-semibold text-blue-900">145</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.activeTrainers}</p>
     </div>
   </div>
 
@@ -263,7 +335,7 @@ const handleEdit = (trainer) => {
   <div className="card border border-l-4 border-l-[#155DFC] border-[#155DFC] p-4">
     <div className="flex items-center flex-col justify-between gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Active Clients</p>
-      <p className="text-xl font-semibold text-blue-900">97</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.activeClients}</p>
     </div>
   </div>
 
@@ -271,7 +343,7 @@ const handleEdit = (trainer) => {
   <div className="card border border-l-4 border-l-[#0096DC] border-[#0096DC] p-4">
     <div className="flex items-center justify-between flex-col gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Avg Rating</p>
-      <p className="text-xl font-semibold text-blue-900">6</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.avgRating}</p>
     </div>
   </div>
 
@@ -279,7 +351,7 @@ const handleEdit = (trainer) => {
   <div className="card border border-l-4 border-l-[#FF4444] border-[#FF4444] p-4">
     <div className="flex items-center justify-between flex-col gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Avg Clients per Trainer</p>
-      <p className="text-xl font-semibold text-blue-900">0</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.avgClientsPerTrainer}</p>
     </div>
   </div>
 
@@ -287,7 +359,7 @@ const handleEdit = (trainer) => {
   <div className="card border border-l-4 border-l-[#F4AF00] border-[#F4AF00] p-4 ">
     <div className="flex items-center justify-between flex-col gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Unassigned Members</p>
-      <p className="text-xl font-semibold text-blue-900">18 </p>
+      <p className="text-xl font-semibold text-blue-900">{stats.unassignedMembers}</p>
     </div>
   </div>
 

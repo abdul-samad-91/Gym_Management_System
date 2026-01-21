@@ -135,7 +135,7 @@ export default function AddMember() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 ">
          {/* Photo Upload */}
         {/* <div className="card">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Photo</h2>
@@ -160,7 +160,7 @@ export default function AddMember() {
 
 
         {/* Personal Information */}
-        <div className="card">
+        <div className="card ">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

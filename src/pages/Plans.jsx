@@ -15,6 +15,14 @@ export default function Plans() {
   const [plans, setPlans] = useState([]);
   const [planMemberCounts, setPlanMemberCounts] = useState({});
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    activePlans: 0,
+    totalSubscribers: 0,
+    monthlyRevenue: 0,
+    topPerformingPlan: 'N/A',
+    leastPerformingPlan: 'N/A',
+    expiringSubscriptions: 0,
+  });
   const [showModal, setShowModal] = useState(false);
   const [editingPlan, setEditingPlan] = useState(null);
   const [formData, setFormData] = useState({
@@ -58,6 +66,7 @@ export default function Plans() {
               if (pid) counts[pid] = (counts[pid] || 0) + 1;
             });
             setPlanMemberCounts(counts);
+            calculateStats(plansData, members);
           }
         } catch (err) {
           // ignore member count errors
@@ -68,6 +77,63 @@ export default function Plans() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateStats = (plansData, members) => {
+    // Active Plans (isActive === true)
+    const activePlans = plansData.filter((p) => p.isActive).length;
+
+    // Total Subscribers (members with Active status)
+    const totalSubscribers = members.filter((m) => m.membershipStatus === 'Active').length;
+
+    // Monthly Revenue (sum of all active member plan prices)
+    const monthlyRevenue = members
+      .filter((m) => m.membershipStatus === 'Active' && m.currentPlan?.price)
+      .reduce((sum, m) => sum + (m.currentPlan.price || 0), 0);
+
+    // Top and Least Performing Plans (by subscriber count)
+    const planCounts = {};
+    members.forEach((m) => {
+      const planId = m.currentPlan?._id;
+      if (planId) planCounts[planId] = (planCounts[planId] || 0) + 1;
+    });
+
+    let topPlan = 'N/A';
+    let leastPlan = 'N/A';
+    let maxCount = 0;
+    let minCount = Infinity;
+
+    plansData.forEach((plan) => {
+      const count = planCounts[plan._id] || 0;
+      if (count > maxCount) {
+        maxCount = count;
+        topPlan = plan.planName;
+      }
+      if (count < minCount && plansData.length > 0) {
+        minCount = count;
+        leastPlan = plan.planName;
+      }
+    });
+
+    // Expiring Subscriptions (members expiring in next 7 days)
+    const today = new Date();
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(today.getDate() + 7);
+
+    const expiringSubscriptions = members.filter((m) => {
+      if (!m.planEndDate) return false;
+      const endDate = new Date(m.planEndDate);
+      return endDate >= today && endDate <= sevenDaysFromNow;
+    }).length;
+
+    setStats({
+      activePlans,
+      totalSubscribers,
+      monthlyRevenue,
+      topPerformingPlan: topPlan,
+      leastPerformingPlan: leastPlan,
+      expiringSubscriptions,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -180,7 +246,7 @@ export default function Plans() {
   <div className="card border border-l-4 border-l-[#D339F6] border-[#D339F6] p-4">
     <div className="flex items-center flex-col justify-between gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Active Plans</p>
-      <p className="text-xl font-semibold text-blue-900">28</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.activePlans}</p>
     </div>
   </div>
 
@@ -188,7 +254,7 @@ export default function Plans() {
   <div className="card border border-l-4 border-l-[#00A63E] border-[#00A63E] p-4">
     <div className="flex items-center flex-col justify-between gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Total Subscribers</p>
-      <p className="text-xl font-semibold text-blue-900">145</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.totalSubscribers}</p>
     </div>
   </div>
 
@@ -196,7 +262,7 @@ export default function Plans() {
   <div className="card border border-l-4 border-l-[#155DFC] border-[#155DFC] p-4">
     <div className="flex items-center flex-col justify-between gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Monthly Revenue</p>
-      <p className="text-xl font-semibold text-blue-900">97</p>
+      <p className="text-xl font-semibold text-blue-900">{formatCurrency(stats.monthlyRevenue)}</p>
     </div>
   </div>
 
@@ -204,7 +270,7 @@ export default function Plans() {
   <div className="card border border-l-4 border-l-[#0096DC] border-[#0096DC] p-4">
     <div className="flex items-center justify-between flex-col gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Top Performing Plan</p>
-      <p className="text-xl font-semibold text-blue-900">6</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.topPerformingPlan}</p>
     </div>
   </div>
 
@@ -212,7 +278,7 @@ export default function Plans() {
   <div className="card border border-l-4 border-l-[#FF4444] border-[#FF4444] p-4">
     <div className="flex items-center justify-between flex-col gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Least Performing Plan</p>
-      <p className="text-xl font-semibold text-blue-900">0</p>
+      <p className="text-xl font-semibold text-blue-900">{stats.leastPerformingPlan}</p>
     </div>
   </div>
 
@@ -220,7 +286,7 @@ export default function Plans() {
   <div className="card border border-l-4 border-l-[#F4AF00] border-[#F4AF00] p-4 ">
     <div className="flex items-center justify-between flex-col gap-2">
     <p className="text-sm text-gray-500 mt-2 font-normal">Expiring Subscriptions</p>
-      <p className="text-xl font-semibold text-blue-900">18 </p>
+      <p className="text-xl font-semibold text-blue-900">{stats.expiringSubscriptions}</p>
     </div>
   </div>
 

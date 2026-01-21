@@ -17,6 +17,7 @@ export default function Members() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [planFilter, setPlanFilter] = useState('All');
   const [searchParams] = useSearchParams();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addLoading, setAddLoading] = useState(false);
@@ -33,10 +34,26 @@ export default function Members() {
     currentPlan: '',
   });
 
+  // Fetch plans on component mount
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
   useEffect(() => {
     fetchStats();
     fetchMembers();
-  }, [statusFilter]);
+  }, [statusFilter, planFilter]);
+
+  const fetchPlans = async () => {
+    try {
+      const response = await api.get('/plans', { params: { isActive: true } });
+      if (response.data.success) {
+        setPlans(response.data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch plans:', error);
+    }
+  };
 
   const fetchStats = async () => {
     try {
@@ -53,6 +70,7 @@ export default function Members() {
     try {
       const params = {};
       if (statusFilter !== 'All') params.status = statusFilter;
+      if (planFilter !== 'All') params.currentPlan = planFilter;
       if (searchTerm) params.search = searchTerm;
 
       const response = await api.get('/members', { params });
@@ -69,12 +87,8 @@ export default function Members() {
   const openAddModal = async () => {
     setIsAddOpen(true);
     try {
-      const [trainersRes, plansRes] = await Promise.all([
-        api.get('/trainers'),
-        api.get('/plans', { params: { isActive: true } }),
-      ]);
+      const trainersRes = await api.get('/trainers');
       if (trainersRes.data.success) setTrainers(trainersRes.data.data);
-      if (plansRes.data.success) setPlans(plansRes.data.data);
     } catch (error) {
       toast.error('Failed to load form data');
     }
@@ -111,10 +125,18 @@ export default function Members() {
     e.preventDefault();
     setAddLoading(true);
     try {
-      await api.post('/members', addFormData);
+      // Convert empty strings to null for optional fields
+      const submitData = {
+        ...addFormData,
+        assignedTrainer: addFormData.assignedTrainer || null,
+        email: addFormData.email || null,
+      };
+      
+      await api.post('/members', submitData);
       toast.success('Member added successfully');
       closeAddModal();
       fetchMembers();
+      fetchStats(); // Also refresh stats
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to add member');
     } finally {
@@ -271,14 +293,16 @@ export default function Members() {
           </select>
           {/*filters plans */}
           <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={planFilter}
+            onChange={(e) => setPlanFilter(e.target.value)}
             className="input md:w-48"
           >
             <option value="All">All Plans</option>
-            <option value="basic">Basic</option>
-            <option value="Standard">Standard</option>
-            <option value="Premium">Premium</option>
+            {plans.map((plan) => (
+              <option key={plan._id} value={plan._id}>
+                {plan.planName}
+              </option>
+            ))}
           </select>
           {/* <button onClick={handleSearch} className="btn btn-primary">
             <Filter className="w-5 h-5" />
