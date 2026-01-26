@@ -222,13 +222,20 @@ export default function MemberDetails() {
                     <p className="font-medium text-gray-900">{payment.plan.planName}</p>
                     <p className="text-sm text-gray-600">{formatDate(payment.paymentDate)}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">
-                      {formatCurrency(payment.finalAmount)}
-                    </p>
-                    <span className={`badge ${getStatusColor(payment.paymentStatus)}`}>
-                      {payment.paymentStatus}
-                    </span>
+                  <div className="text-right flex items-center gap-3">
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {formatCurrency(payment.finalAmount)}
+                      </p>
+                      <span className={`badge ${getStatusColor(payment.paymentStatus)}`}>
+                        {payment.paymentStatus}
+                      </span>
+                    </div>
+                    {payment.paymentStatus === 'Pending' && (
+                      <button className="btn btn-sm btn-primary">
+                        Mark as Paid
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

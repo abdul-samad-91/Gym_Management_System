@@ -9,7 +9,7 @@ export default function StatCard({ title, value, icon: Icon, color = 'primary', 
   };
 
   return (
-    <div className="card hover:shadow-md transition-shadow w-56 ">
+    <div className="card hover:shadow-md transition-shadow w-56 bg-blue-50">
       <div className="flex  flex-col w-32 h-32 gap-4 ">
          {Icon && (
           <div className={`p-3 rounded-lg  w-12 h-12 ${colorClasses[color]} `}>
@@ -18,7 +18,7 @@ export default function StatCard({ title, value, icon: Icon, color = 'primary', 
         )}
         <div className="flex-1 ">
           <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
           {trend && (
             <p className={`text-sm mt-2 ${trend.positive ? 'text-green-600' : 'text-red-600'}`}>
               {trend.positive ? '↑' : '↓'} {trend.value}

@@ -48,8 +48,8 @@ export default function Attendance() {
       if (!secs) return '0m';
       const h = Math.floor(secs / 3600);
       const m = Math.floor((secs % 3600) / 60);
-      if (h) return `${h}h ${m}m`;
-      return `${m}m`;
+      if (h) return `${h}h ${m} min`;
+      return `${m} min`;
     };
 
     // Peak hour based on check-in hour

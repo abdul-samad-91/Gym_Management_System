@@ -18,6 +18,7 @@ export default function Members() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [planFilter, setPlanFilter] = useState('All');
+  const [membersTotal, setMembersTotal] = useState(0);
   const [searchParams] = useSearchParams();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addLoading, setAddLoading] = useState(false);
@@ -32,6 +33,16 @@ export default function Members() {
     address: { city: '', state: '', zipCode: '' },
     assignedTrainer: '',
     currentPlan: '',
+    planPrice: 0,
+    trainerPrice: 0,
+    payment: {
+      months: 1,
+      amount: 0,
+      fullPayment: 0,
+      remaining: 0,
+      paymentMethod: 'Cash',
+      paymentStatus: 'Paid'
+    }
   });
 
   // Fetch plans on component mount
@@ -68,7 +79,7 @@ export default function Members() {
 
   const fetchMembers = async () => {
     try {
-      const params = {};
+      const params = { limit: 1000 }; // Get all members, not just paginated
       if (statusFilter !== 'All') params.status = statusFilter;
       if (planFilter !== 'All') params.currentPlan = planFilter;
       if (searchTerm) params.search = searchTerm;
@@ -76,6 +87,7 @@ export default function Members() {
       const response = await api.get('/members', { params });
       if (response.data.success) {
         setMembers(response.data.data);
+        setMembersTotal(response.data.total);
       }
     } catch (error) {
       toast.error('Failed to fetch members');
@@ -105,17 +117,91 @@ export default function Members() {
       address: { city: '', state: '', zipCode: '' },
       assignedTrainer: '',
       currentPlan: '',
+      planPrice: 0,
+      trainerPrice: 0,
+      payment: {
+        months: 1,
+        amount: 0,
+        fullPayment: 0,
+        remaining: 0,
+        paymentMethod: 'Cash',
+        paymentStatus: 'Paid'
+      }
     });
   };
 
   const handleAddChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes('.')) {
+    if (name === 'assignedTrainer') {
+      const trainer = trainers.find((t) => t._id === value);
+      const trainerPrice = trainer?.price || 0;
+      setAddFormData((prev) => {
+        // Get the base plan price (without trainer price)
+        const basePlanPrice = prev.planPrice || 0;
+        const updatedAmount = basePlanPrice + trainerPrice;
+        const months = parseFloat(prev.payment.months) || 1;
+        const totalDue = months * updatedAmount;
+        const paidAmount = parseFloat(prev.payment.fullPayment) || 0;
+        return {
+          ...prev,
+          assignedTrainer: value,
+          trainerPrice: trainerPrice,
+          payment: {
+            ...prev.payment,
+            amount: updatedAmount,
+            remaining: Math.max(0, totalDue - paidAmount),
+          },
+        };
+      });
+    } else if (name === 'currentPlan') {
+      const plan = plans.find((p) => p._id === value);
+      const planPrice = plan?.price ?? 0;
+      setAddFormData((prev) => {
+        const months = parseFloat(prev.payment.months) || 1;
+        const trainerPrice = prev.trainerPrice || 0;
+        const updatedAmount = planPrice + trainerPrice;
+        const totalDue = months * updatedAmount;
+        const paidAmount = parseFloat(prev.payment.fullPayment) || 0;
+        return {
+          ...prev,
+          currentPlan: value,
+          planPrice: planPrice,
+          payment: {
+            ...prev.payment,
+            amount: updatedAmount,
+            remaining: Math.max(0, totalDue - paidAmount),
+          },
+        };
+      });
+    } else if (name.includes('.')) {
       const [parent, child] = name.split('.');
-      setAddFormData((prev) => ({
-        ...prev,
-        [parent]: { ...prev[parent], [child]: value },
-      }));
+      setAddFormData((prev) => {
+        const updated = {
+          ...prev,
+          [parent]: { ...prev[parent], [child]: value },
+        };
+        
+        // Auto-calculate payment amounts when payment fields change
+        if (parent === 'payment') {
+          const months = parseFloat(updated.payment.months) || 0;
+          const amount = parseFloat(updated.payment.amount) || 0;
+          const fullPaymentInput = parseFloat(updated.payment.fullPayment) || 0;
+          
+          // Calculate remaining when months or amount changes
+          if (child === 'months' || child === 'amount') {
+            const totalDue = months * amount;
+            // remaining = total due - amount already paid
+            updated.payment.remaining = Math.max(0, totalDue - fullPaymentInput);
+          }
+          // Calculate remaining when full payment is explicitly entered by user
+          else if (child === 'fullPayment') {
+            // remaining = total due - amount paid
+            updated.payment.remaining = Math.max(0, (months * amount) - fullPaymentInput);
+          }
+        }
+        
+        return updated;
+      });
     } else {
       setAddFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -135,6 +221,10 @@ export default function Members() {
       await api.post('/members', submitData);
       toast.success('Member added successfully');
       closeAddModal();
+      // Reset filters to show all members including the newly added one
+      setStatusFilter('All');
+      setPlanFilter('All');
+      setSearchTerm('');
       fetchMembers();
       fetchStats(); // Also refresh stats
     } catch (error) {
@@ -196,8 +286,8 @@ export default function Members() {
             <div>
               <div className='flex items-center justify-between flex-col'>
                 <p className="text-sm text-blue-600 font-medium">Total Members</p>
-                <p className="text-3xl font-bold text-blue-900 mt-1">
-                  {stats?.members?.total || 0}
+                <p className="text-2xl font-bold text-blue-900 mt-1">
+                  {membersTotal || stats?.members?.total || 0}
                 </p>
               </div>
             </div>
@@ -208,7 +298,7 @@ export default function Members() {
             <div >
               <div className='flex items-center justify-between flex-col'>
                 <p className="text-sm text-green-600 font-medium">Active Members</p>
-                <p className="text-3xl font-bold text-green-900 mt-1">
+                <p className="text-2xl font-bold text-green-900 mt-1">
                   {stats?.members?.active || 0}
                 </p>
               </div>
@@ -220,7 +310,7 @@ export default function Members() {
             <div>
               <div className='flex items-center justify-between flex-col'>
                 <p className="text-sm text-purple-600 font-medium">New This Month</p>
-                <p className="text-3xl font-bold text-purple-900 mt-1">
+                <p className="text-2xl font-bold text-purple-900 mt-1">
                   {stats?.members?.newThisMonth || 0}
                 </p>
               </div>
@@ -232,7 +322,7 @@ export default function Members() {
             <div>
               <div className='flex items-center justify-between flex-col'>
                 <p className="text-sm text-orange-600 font-medium">Expiring Soon</p>
-                <p className="text-3xl font-bold text-orange-900 mt-1">
+                <p className="text-2xl font-bold text-orange-900 mt-1">
                   {stats?.alerts?.expiringMemberships || 0}
                 </p>
               </div>
@@ -244,7 +334,7 @@ export default function Members() {
             <div >
               <div className='flex items-center justify-between flex-col'>
                 <p className="text-sm text-red-600 font-medium">Expired</p>
-                <p className="text-3xl font-bold text-red-900 mt-1">
+                <p className="text-2xl font-bold text-red-900 mt-1">
                   {stats?.members?.expired || 0}
                 </p>
               </div>
@@ -254,7 +344,7 @@ export default function Members() {
             <div >
               <div className='flex items-center justify-between flex-col'>
                 <p className="text-sm text-red-600 font-medium">Renewal this month</p>
-                <p className="text-3xl font-bold text-red-900 mt-1">
+                <p className="text-2xl font-bold text-red-900 mt-1">
                   {stats?.members?.renewalThisMonth || 0}
                 </p>
               </div>
@@ -523,6 +613,95 @@ export default function Members() {
             </div>
           </div>
 
+
+   <div>
+     <h2 className='text-lg font-normal mb-1'>Payment Details</h2>
+     <p className='text-sm font-normal text-gray-500 mb-1'>Enter payment information</p>
+     <hr />
+   </div>
+   
+   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+       <div>
+         <label className="label">Number of Months *</label>
+         <input
+           type="number"
+           name="payment.months"
+           value={addFormData.payment.months}
+           onChange={handleAddChange}
+           placeholder='Enter number of months'
+           className="input bg-[#F3F4F6]"
+           min="1"
+           required
+         />
+       </div>
+       <div>
+         <label className="label">Amount per Month *</label>
+         <input
+           type="number"
+           name="payment.amount"
+          //  Add the trainer price if assigned trainer to member
+           value={addFormData.payment.amount}
+           onChange={handleAddChange}
+           placeholder='Enter monthly amount'
+           className="input bg-[#F3F4F6]"
+           min="0"
+           required
+         />
+       </div>
+       <div>
+         <label className="label">Full Payment Amount</label>
+         <input
+           type="number"
+           name="payment.fullPayment"
+           value={addFormData.payment.fullPayment === 0 ? '' : addFormData.payment.fullPayment}
+           onChange={handleAddChange}
+           placeholder='Auto-calculated or enter amount'
+           className="input bg-[#F3F4F6]"
+           min="0"
+         />
+         <p className="text-xs text-gray-500 mt-1">Total: Rs {addFormData.payment.months * addFormData.payment.amount}</p>
+       </div>
+       <div>
+         <label className="label">Remaining Amount</label>
+         <input
+           type="number"
+           name="payment.remaining"
+           value={addFormData.payment.remaining}
+           className="input bg-[#F3F4F6]"
+           readOnly
+           disabled
+         />
+         <p className="text-xs text-gray-500 mt-1">Auto-calculated</p>
+       </div>
+       <div>
+         <label className="label">Payment Method</label>
+         <select
+           name="payment.paymentMethod"
+           value={addFormData.payment.paymentMethod}
+           onChange={handleAddChange}
+           className="input bg-[#F3F4F6]"
+         >
+           <option value="Cash">Cash</option>
+           <option value="Card">Card</option>
+           <option value="UPI">UPI</option>
+           <option value="Bank Transfer">Bank Transfer</option>
+           <option value="Cheque">Cheque</option>
+         </select>
+       </div>
+       <div>
+         <label className="label">Payment Status</label>
+         <select
+           name="payment.paymentStatus"
+           value={addFormData.payment.paymentStatus}
+           onChange={handleAddChange}
+           className="input bg-[#F3F4F6]"
+         >
+           <option value="Paid">Paid</option>
+           <option value="Pending">Pending</option>
+           <option value="Partial">Partial</option>
+         </select>
+       </div>
+     </div>
 
    <div>
      <h2 className='text-lg font-normal mb-1'>Addresses </h2>
