@@ -18,6 +18,8 @@ import Clock from "../../Public/Clock.svg"
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showAllPayments, setShowAllPayments] = useState(false);
+  const [allPayments, setAllPayments] = useState([]);
 
   useEffect(() => {
     fetchDashboardStats();
@@ -43,9 +45,32 @@ export default function Dashboard() {
       });
       toast.success('Payment marked as paid');
       fetchDashboardStats(); // Refresh the data
+      if (showAllPayments) {
+        fetchAllPayments(); // Refresh all payments if viewing all
+      }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update payment status');
     }
+  };
+
+  const fetchAllPayments = async () => {
+    try {
+      const response = await api.get('/members/payments/all');
+      if (response.data.success) {
+        setAllPayments(response.data.data.filter(payment => payment.member !== null));
+      }
+    } catch (error) {
+      toast.error('Failed to fetch all payments');
+    }
+  };
+
+  const handleViewAll = () => {
+    setShowAllPayments(true);
+    fetchAllPayments();
+  };
+
+  const handleViewLess = () => {
+    setShowAllPayments(false);
   };
 
   if (loading) return <LoadingSpinner />;
@@ -300,15 +325,26 @@ export default function Dashboard() {
              <p className="mt-1">Latest Membership Payments</p>
                  </div>
          <div>
-           <Link to="/reports" className="text-sm text-primary-600 hover:text-primary-700">
-            View All
-          </Link>
-     
+           {!showAllPayments ? (
+             <h2 
+               onClick={handleViewAll}
+               className="text-sm text-primary-600 hover:text-primary-700 cursor-pointer"
+             >
+               View All
+             </h2>
+           ) : (
+             <h2 
+               onClick={handleViewLess}
+               className="text-sm text-primary-600 hover:text-primary-700 cursor-pointer"
+             >
+               View Less
+             </h2>
+           )}
         </div>
         </div>
       
         <div className="overflow-x-auto">
-                    {(stats.recentPayments ?? []).length > 0 ? (
+                    {((showAllPayments ? allPayments : stats.recentPayments) ?? []).length > 0 ? (
           <table className="w-full bg-[#E5E7EB] border border-gray-400 ">
             <thead>
               <tr className="border-b border-gray-200 ">
@@ -339,7 +375,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {(stats.recentPayments ?? []).filter(payment => payment.member !== null).map((payment) => {
+              {(showAllPayments ? allPayments : stats.recentPayments ?? []).filter(payment => payment.member !== null).map((payment) => {
                 const memberName = payment.member?.fullName || 'Member removed';
                 const memberId = payment.member?.memberId || '—';
                 const planName = payment.plan?.planName || 'Plan removed';
