@@ -30,9 +30,11 @@
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+    @apply bg-white rounded-lg shadow-sm border  p-6 border-t border-r border-b border-l ;
   }
-  
+  .card1{
+    @apply rounded-lg shadow-sm border  ;
+  }
   .input {
     @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all;
   }
@@ -111,3 +113,18 @@
   }
 }
 
+
+/* Base styles for all boxes */
+.box {
+  border: 2px solid;  /* default width */
+  padding: 1rem;      /* similar to Tailwind's p-4 */
+  margin: 1rem 0;     /* spacing between boxes */
+  border-radius: 0.5rem; /* optional rounded corners */
+}
+
+/* Different border colors */
+.border-purple { border-color: #D339F6; }
+.border-red    { border-color: #F63939; }
+.border-blue   { border-color: #339BF6; }
+.border-green  { border-color: #39F66E; }
+.border-orange { border-color: #F69B33; }

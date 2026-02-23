@@ -20,6 +20,26 @@ export const getRelativeTime = (date) => {
   return formatDistanceToNow(new Date(date), { addSuffix: true });
 };
 
+export const formatDuration = (startDate, endDate = null) => {
+  if (!startDate) return 'N/A';
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : new Date();
+  let diffSeconds = Math.floor((end - start) / 1000);
+  if (diffSeconds < 0) diffSeconds = 0;
+
+  const hours = Math.floor(diffSeconds / 3600);
+  diffSeconds %= 3600;
+  const minutes = Math.floor(diffSeconds / 60);
+  const seconds = diffSeconds % 60;
+
+  const parts = [];
+  if (hours) parts.push(`${hours}h`);
+  if (minutes) parts.push(`${minutes}m`);
+  if (!hours && !minutes) parts.push(`${seconds}s`);
+
+  return parts.join(' ') || '0s';
+};
+
 // export const formatCurrency = (amount) => {
 //   return new Intl.NumberFormat('en-IN', {
 //     style: 'currency',

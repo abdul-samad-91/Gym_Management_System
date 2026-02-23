@@ -41,6 +41,7 @@ export default function MemberDetails() {
     } finally {
       setLoading(false);
     }
+    
   };
 
   const handleDelete = async () => {
@@ -85,21 +86,28 @@ export default function MemberDetails() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Card */}
-        <div className="card lg:col-span-1">
-          <div className="text-center">
-            {/* <img
-              src={member.photo || '/default-avatar.png'}
-              alt={member.fullName}
-              className="w-32 h-32 rounded-full object-cover mx-auto mb-4"
-            /> */}
-            <h2 className="text-xl font-bold text-gray-900 ">{member.fullName}</h2>
-            <p className="text-gray-600 mb-4">{member.memberId}</p>
+        <div className="card lg:col-span-1 space-y-6">
+          <div className="flex items-center space-x-3 ">
+
+          {/* Avatar with initials gradient */}
+          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-green-500 
+                          flex items-center justify-center text-white font-semibold text-lg ">
+            {member.fullName?.charAt(0)}
+            {member.fullName?.split(" ")[1]?.charAt(0)}
+          </div>
+
+          <div className='flex flex-col gap-1 '>
+            <h3 className="font-semibold text-gray-900 text-lg">
+              {member.fullName}
+            </h3>
+            <p className="text-sm text-gray-500">{member.memberId}</p>
             <span className={`badge ${getStatusColor(member.membershipStatus)} text-lg`}>
               {member.membershipStatus}
             </span>
           </div>
+          </div>
 
-          <div className="mt-6 space-y-3 ">
+          <div className="mt-6 space-y-3  ml-10">
             <div className="flex items-center space-x-2 text-gray-700" >
               <Phone className="w-5 h-5" />
               <span>{member.phone}</span>
@@ -214,13 +222,20 @@ export default function MemberDetails() {
                     <p className="font-medium text-gray-900">{payment.plan.planName}</p>
                     <p className="text-sm text-gray-600">{formatDate(payment.paymentDate)}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">
-                      {formatCurrency(payment.finalAmount)}
-                    </p>
-                    <span className={`badge ${getStatusColor(payment.paymentStatus)}`}>
-                      {payment.paymentStatus}
-                    </span>
+                  <div className="text-right flex items-center gap-3">
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {formatCurrency(payment.finalAmount)}
+                      </p>
+                      <span className={`badge ${getStatusColor(payment.paymentStatus)}`}>
+                        {payment.paymentStatus}
+                      </span>
+                    </div>
+                    {payment.paymentStatus === 'Pending' && (
+                      <button className="btn btn-sm btn-primary">
+                        Mark as Paid
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
