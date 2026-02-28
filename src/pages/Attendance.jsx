@@ -33,7 +33,7 @@ export default function Attendance() {
     const checkedOut = checkedOutList.length;
     const currentlyIn = total - checkedOut;
 
-    // Average session duration (in seconds) for checked-out entries
+    // Average session duration (in seconds)  for checked-out entries
     const avgSeconds = checkedOut
       ? Math.floor(
           checkedOutList.reduce((sum, a) => {
