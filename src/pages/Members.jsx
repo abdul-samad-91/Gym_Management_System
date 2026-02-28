@@ -6,9 +6,9 @@ import Modal from '../components/Modal';
 import api from '../utils/api';
 import { formatDate, getStatusColor, exportToCSV } from '../utils/helpers';
 import toast from 'react-hot-toast';
-import phone from '../../public/phone.svg';
-import premium from '../../public/premium.svg';
-import expires from '../../public/expires.svg';
+import phone from '/public/phone.svg';
+import premium from '/public/premium.svg';
+import expires from '/public/expires.svg';
 
 
 export default function Members() {
