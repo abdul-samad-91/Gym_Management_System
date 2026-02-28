@@ -11,10 +11,10 @@ import { MoveRight } from 'lucide-react';
 // import Icon from "../../Public/Icon.svg"
 // import PakistaniRupee from "../../Public/pakistan-rupee-icon 1.svg"
 // import Clock from "../../Public/Clock.svg"
-import Icon from "/public/Icon.svg"
-import PakistaniRupee from "/public/pakistan-rupee-icon 1.svg"
-import Clock from "/public/Clock.svg"
-import user from "/public/user.svg"
+import Icon from "/Icon.svg"
+import PakistaniRupee from "/pakistan-rupee-icon 1.svg"
+import Clock from "/Clock.svg"
+import user from "/user.svg"
 
 
 
