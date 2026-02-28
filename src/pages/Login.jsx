@@ -35,7 +35,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('../../public/bgImage.png')] bg-cover bg-center flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[url('../assets/bgImage.png')] bg-cover bg-center flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md px-12 py-20">
         {/* <div className="flex justify-center mb-6"> */}
           {/* <div className="flex items-center space-x-2"> */}
