@@ -6,9 +6,9 @@ import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 import toast from 'react-hot-toast';
 // import dollar  from '../../public/dollar.svg';
-import pakistaniRupee  from '/pakistan-rupee-icon 1.svg';
-import icon4  from '/icon4.svg';
-import icon5  from '/icon5.svg';
+import pakistaniRupee  from '../../pakistan-rupee-icon 1.svg';
+import icon4  from '../../icon4.svg';
+import icon5  from '../../icon5.svg';
 import { Check } from 'lucide-react';
 
 export default function Plans() {
