@@ -10,7 +10,7 @@ import checkout from "../assets/checkout.svg"
 import {UserCheck} from 'lucide-react'
 import checkin2 from "../assets/checkin2.svg"
 import user from "../assets/user.svg"
-import icon4 from "../assets/icon4.svg"
+import icon4 from "../assets/Icon4.svg"
 
 
 export default function Attendance() {
