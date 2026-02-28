@@ -7,10 +7,14 @@ import api from '../utils/api';
 import { formatCurrency, formatDate, getStatusColor } from '../utils/helpers';
 import toast from 'react-hot-toast';
 import { MoveRight } from 'lucide-react';
-import user from "../../Public/user.svg"
-import Icon from "../../Public/Icon.svg"
-import PakistaniRupee from "../../Public/pakistan-rupee-icon 1.svg"
-import Clock from "../../Public/Clock.svg"
+// import user from "../../Public/user.svg"
+// import Icon from "../../Public/Icon.svg"
+// import PakistaniRupee from "../../Public/pakistan-rupee-icon 1.svg"
+// import Clock from "../../Public/Clock.svg"
+import Icon from "/public/Icon.svg"
+import PakistaniRupee from "/public/pakistan-rupee-icon 1.svg"
+import Clock from "/public/Clock.svg"
+import user from "/public/user.svg"
 
 
 
