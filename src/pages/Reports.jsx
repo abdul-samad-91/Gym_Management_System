@@ -348,7 +348,7 @@ import { formatDate, formatCurrency, exportToCSV } from '../utils/helpers';
 import toast from 'react-hot-toast';
 import icon6 from '/public/icon6.svg';
 import { FiUsers } from "react-icons/fi";
-import pakistaniRupee from "/public/pakistan-rupee-icon 1.svg"
+import pakistaniRupee from "/pakistan-rupee-icon 1.svg"
 
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
