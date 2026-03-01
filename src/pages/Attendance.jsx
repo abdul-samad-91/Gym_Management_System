@@ -5,12 +5,12 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
 import { formatDate, formatTime, exportToCSV, formatDuration } from '../utils/helpers';
 import toast from 'react-hot-toast';
-import checkin from "../../public/checkin.svg"
-import checkout from "../../public/checkout.svg"
+import checkin from "/public/checkin.svg"
+import checkout from "/public/checkout.svg"
 import {UserCheck} from 'lucide-react'
-import checkin2 from "../../public/checkin2.svg"
-import user from "../../Public/user.svg"
-  import icon4 from "../../public/icon4.svg"
+import checkin2 from "/public/checkin2.svg"
+import user from "/Public/user.svg"
+  import icon4 from "/public/icon4.svg"
 
 
 
