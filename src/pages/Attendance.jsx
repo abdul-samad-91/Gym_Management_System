@@ -5,14 +5,12 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
 import { formatDate, formatTime, exportToCSV, formatDuration } from '../utils/helpers';
 import toast from 'react-hot-toast';
-import checkin from "/checkin.svg"
-import checkout from "/checkout.svg"
+import checkin from "../assets/checkin.svg"
+import checkout from "../assets/checkout.svg"
 import {UserCheck} from 'lucide-react'
-import checkin2 from "/checkin2.svg"
-import user from "/user.svg"
-  import icon4 from "/public/icon4.svg"
-
-
+import checkin2 from "../assets/checkin2.svg"
+import user from "../assets/user.svg"
+import icon4 from "../assets/Icon4.svg"
 
 
 export default function Attendance() {
@@ -33,7 +31,7 @@ export default function Attendance() {
     const checkedOut = checkedOutList.length;
     const currentlyIn = total - checkedOut;
 
-    // Average session duration (in seconds) for checked-out entries
+    // Average session duration (in seconds)  for checked-out entries
     const avgSeconds = checkedOut
       ? Math.floor(
           checkedOutList.reduce((sum, a) => {
