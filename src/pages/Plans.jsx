@@ -5,17 +5,10 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
 import toast from 'react-hot-toast';
-<<<<<<< HEAD
-// import dollar  from '../../public/dollar.svg';
+
 import pakistaniRupee  from '../assets/pakistan-rupee-icon 1.svg';
 import icon4  from '../assets/Icon4.svg';
 import icon5  from '../assets/Icon5.svg';
-=======
-// import dollar  from '/public/dollar.svg';
-import pakistaniRupee  from '/pakistan-rupee-icon 1.svg';
-import icon4  from '/public/icon4.svg';
-import icon5  from '/public/icon5.svg';
->>>>>>> 57ad0c1c3b0c4933e2981b7678996d32f60681a4
 import { Check } from 'lucide-react';
 
 export default function Plans() {

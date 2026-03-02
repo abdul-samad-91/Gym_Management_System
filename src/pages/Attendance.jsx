@@ -5,23 +5,13 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import api from '../utils/api';
 import { formatDate, formatTime, exportToCSV, formatDuration } from '../utils/helpers';
 import toast from 'react-hot-toast';
-<<<<<<< HEAD
+
 import checkin from "../assets/checkin.svg"
 import checkout from "../assets/checkout.svg"
 import {UserCheck} from 'lucide-react'
 import checkin2 from "../assets/checkin2.svg"
 import user from "../assets/user.svg"
 import icon4 from "../assets/Icon4.svg"
-=======
-import checkin from "/checkin.svg"
-import checkout from "/checkout.svg"
-import {UserCheck} from 'lucide-react'
-import checkin2 from "/checkin2.svg"
-import user from "/user.svg"
-  import icon4 from "/public/icon4.svg"
-
-
->>>>>>> 57ad0c1c3b0c4933e2981b7678996d32f60681a4
 
 
 export default function Attendance() {
