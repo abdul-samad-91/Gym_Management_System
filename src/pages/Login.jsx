@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom';
 import bgImage from '../assets/bgImage.png';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await api.post('/auth/login', { username, password });
+      const response = await api.post('/auth/login', { username: email, password });
       
       if (response.data.success) {
         const { user, token } = response.data.data;
@@ -59,9 +59,9 @@ export default function Login() {
           <div>
             <label className="label">Email Address</label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="input"
               placeholder="Enter your Email Address"
               required

@@ -346,9 +346,15 @@ import { FileText, Download, Users, DollarSign, TrendingUp } from 'lucide-react'
 import api from '../utils/api';
 import { formatDate, formatCurrency, exportToCSV } from '../utils/helpers';
 import toast from 'react-hot-toast';
+<<<<<<< HEAD
 import icon6 from '../assets/Icon6.svg';
 import { FiUsers } from "react-icons/fi";
 import pakistaniRupee from "../assets/pakistan-rupee-icon 1.svg"
+=======
+import icon6 from '/public/icon6.svg';
+import { FiUsers } from "react-icons/fi";
+import pakistaniRupee from "/pakistan-rupee-icon 1.svg"
+>>>>>>> 57ad0c1c3b0c4933e2981b7678996d32f60681a4
 
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
